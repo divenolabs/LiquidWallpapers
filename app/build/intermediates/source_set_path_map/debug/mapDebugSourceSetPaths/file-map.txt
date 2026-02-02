@@ -1,0 +1,72 @@
+com.example.liquidwallpapers.app-ads-adservices-java-1.0.0-beta05-0 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\0436a4dae338885c6bfc869b502dd49a\transformed\ads-adservices-java-1.0.0-beta05\res
+com.example.liquidwallpapers.app-savedstate-1.2.1-1 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\0e5732f61a17ca86be310f116134d9f5\transformed\savedstate-1.2.1\res
+com.example.liquidwallpapers.app-savedstate-ktx-1.2.1-2 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\1eceab9e918942555341569ddb4f87ca\transformed\savedstate-ktx-1.2.1\res
+com.example.liquidwallpapers.app-core-1.12.0-3 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\21f4e2ecf3193bc00a0a427824b9f69b\transformed\core-1.12.0\res
+com.example.liquidwallpapers.app-core-runtime-2.2.0-4 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\22b24362b2c2ecc565862b0585326ab4\transformed\core-runtime-2.2.0\res
+com.example.liquidwallpapers.app-material-icons-extended-release-5 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\2766701b3eb1f0318928870796a9b400\transformed\material-icons-extended-release\res
+com.example.liquidwallpapers.app-runtime-saveable-release-6 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\294e65ff42a4d3f616de115c7ae70553\transformed\runtime-saveable-release\res
+com.example.liquidwallpapers.app-sqlite-framework-2.4.0-7 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\2be830cbf9d2ffaee0a1d84b5e654a8e\transformed\sqlite-framework-2.4.0\res
+com.example.liquidwallpapers.app-emoji2-1.3.0-8 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\2dd639ef66a40927c886b6a63d3de689\transformed\emoji2-1.3.0\res
+com.example.liquidwallpapers.app-navigation-compose-2.7.7-9 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\3192b8c3f76c4347ea63aba1a51ed433\transformed\navigation-compose-2.7.7\res
+com.example.liquidwallpapers.app-lifecycle-process-2.7.0-10 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\32469a6af59eb3bed092ffb78e8fbd9e\transformed\lifecycle-process-2.7.0\res
+com.example.liquidwallpapers.app-animation-core-release-11 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\326d0bee8ed13658af9b9af6df289bcf\transformed\animation-core-release\res
+com.example.liquidwallpapers.app-activity-ktx-1.8.2-12 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\3600d123469cd006ea52685d14f069cd\transformed\activity-ktx-1.8.2\res
+com.example.liquidwallpapers.app-animation-release-13 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\367ab7729479c720f1bc1a45bdadf619\transformed\animation-release\res
+com.example.liquidwallpapers.app-sqlite-2.4.0-14 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\381be7f737156159159bdb958f5ae674\transformed\sqlite-2.4.0\res
+com.example.liquidwallpapers.app-ui-tooling-preview-release-15 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\3fcd44b1b2e451addf933ae24f844ccf\transformed\ui-tooling-preview-release\res
+com.example.liquidwallpapers.app-material-icons-core-release-16 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\4dcfee0be230dab35d98a6c80bc6de4e\transformed\material-icons-core-release\res
+com.example.liquidwallpapers.app-firebase-common-20.4.2-17 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\55bb92157d9b6f028afffb842bbe4cf8\transformed\firebase-common-20.4.2\res
+com.example.liquidwallpapers.app-lifecycle-viewmodel-compose-2.7.0-18 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\55c33beab4888d8d9502b76223914b4d\transformed\lifecycle-viewmodel-compose-2.7.0\res
+com.example.liquidwallpapers.app-lifecycle-livedata-2.7.0-19 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\5bcfc07cfaeaada3dcab77fc6e9a1062\transformed\lifecycle-livedata-2.7.0\res
+com.example.liquidwallpapers.app-navigation-runtime-2.7.7-20 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\5cc0ae09e203cfd97c53a19b19ba0b78\transformed\navigation-runtime-2.7.7\res
+com.example.liquidwallpapers.app-room-ktx-2.6.1-21 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\5f84637e4387f4a022728c72b1a86112\transformed\room-ktx-2.6.1\res
+com.example.liquidwallpapers.app-lifecycle-viewmodel-2.7.0-22 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\63d1393ff66d9fb01da2dce608d41766\transformed\lifecycle-viewmodel-2.7.0\res
+com.example.liquidwallpapers.app-startup-runtime-1.1.1-23 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\6516563a95d04f57ac1f4a28c0178e27\transformed\startup-runtime-1.1.1\res
+com.example.liquidwallpapers.app-ui-tooling-release-24 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\67367e78123c6a8619996b60a9c6445d\transformed\ui-tooling-release\res
+com.example.liquidwallpapers.app-ui-tooling-data-release-25 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\6809ef89d7bcc2dd50c5dbe6739e9fb3\transformed\ui-tooling-data-release\res
+com.example.liquidwallpapers.app-ui-util-release-26 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\6dbaca926dded48f5d195a41c95d6190\transformed\ui-util-release\res
+com.example.liquidwallpapers.app-ui-release-27 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\7d0184f03a40a1fa1968ea8012e3c028\transformed\ui-release\res
+com.example.liquidwallpapers.app-foundation-layout-release-28 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\7dda1ecf20230f16cb1fbda29c9f63a0\transformed\foundation-layout-release\res
+com.example.liquidwallpapers.app-ads-adservices-1.0.0-beta05-29 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\84505ed8f1958f66a3b5fc710ee10b24\transformed\ads-adservices-1.0.0-beta05\res
+com.example.liquidwallpapers.app-lifecycle-livedata-core-ktx-2.7.0-30 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\877f3601fd51a711c4ff87e35d3d6430\transformed\lifecycle-livedata-core-ktx-2.7.0\res
+com.example.liquidwallpapers.app-ui-unit-release-31 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\8cf862f008301ed40594eedd1169f047\transformed\ui-unit-release\res
+com.example.liquidwallpapers.app-navigation-common-2.7.7-32 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\8f3046f0ce9d6d2ca2b310e68e41c62c\transformed\navigation-common-2.7.7\res
+com.example.liquidwallpapers.app-activity-1.8.2-33 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\91f82bad89aaf18f9a3b9012bbc61a17\transformed\activity-1.8.2\res
+com.example.liquidwallpapers.app-customview-poolingcontainer-1.0.0-34 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\9259f64c033ec25295b3f95fc889f56b\transformed\customview-poolingcontainer-1.0.0\res
+com.example.liquidwallpapers.app-browser-1.4.0-35 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\93c7a5999d5393591291f87477fc6858\transformed\browser-1.4.0\res
+com.example.liquidwallpapers.app-navigation-common-ktx-2.7.7-36 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\961c320a32d20498444d182f4194ed4d\transformed\navigation-common-ktx-2.7.7\res
+com.example.liquidwallpapers.app-ui-graphics-release-37 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\9c0bf366a9343521e512b1e12f326bf4\transformed\ui-graphics-release\res
+com.example.liquidwallpapers.app-lifecycle-viewmodel-ktx-2.7.0-38 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\9c76202a62083ea7bacca13b6cc32e67\transformed\lifecycle-viewmodel-ktx-2.7.0\res
+com.example.liquidwallpapers.app-appcompat-resources-1.6.1-39 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\9e2e87b44e8661012dfceb5225412d84\transformed\appcompat-resources-1.6.1\res
+com.example.liquidwallpapers.app-lifecycle-livedata-core-2.7.0-40 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\9e63d427e7b10f838d6ea3886f5cbfd3\transformed\lifecycle-livedata-core-2.7.0\res
+com.example.liquidwallpapers.app-profileinstaller-1.3.1-41 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\a4c2989b2ba10150125a7c6ea2305b4a\transformed\profileinstaller-1.3.1\res
+com.example.liquidwallpapers.app-foundation-release-42 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\ba92ad5fd40b612f8c1385b4aa881b68\transformed\foundation-release\res
+com.example.liquidwallpapers.app-fragment-1.5.1-43 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\bc7b28aea79ffacdf352f9e7fae34bd8\transformed\fragment-1.5.1\res
+com.example.liquidwallpapers.app-lifecycle-viewmodel-savedstate-2.7.0-44 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\bde6ef4a47e3fa2de2d3bbacb591856d\transformed\lifecycle-viewmodel-savedstate-2.7.0\res
+com.example.liquidwallpapers.app-material3-release-45 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\c14fe304bb438c8d3397ba829a8f3c4a\transformed\material3-release\res
+com.example.liquidwallpapers.app-room-runtime-2.6.1-46 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\c150d4974be064c5ec1b56fb16020046\transformed\room-runtime-2.6.1\res
+com.example.liquidwallpapers.app-coil-base-2.6.0-47 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\c1abbfb71fd173b7d486ef87a0b103ae\transformed\coil-base-2.6.0\res
+com.example.liquidwallpapers.app-ui-geometry-release-48 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\c28059a0b7a869ca511ea4d5ffcc9242\transformed\ui-geometry-release\res
+com.example.liquidwallpapers.app-navigation-runtime-ktx-2.7.7-49 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\c47e88fa535b120b02fc93262533a3fc\transformed\navigation-runtime-ktx-2.7.7\res
+com.example.liquidwallpapers.app-ui-text-release-50 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\c9884319c62bf980caae0614d6205c42\transformed\ui-text-release\res
+com.example.liquidwallpapers.app-runtime-release-51 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\c9e3a4c7587b8a92d849e0e91acc1eeb\transformed\runtime-release\res
+com.example.liquidwallpapers.app-activity-compose-1.8.2-52 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\cd5822bc435e637bca97c71665bfe38b\transformed\activity-compose-1.8.2\res
+com.example.liquidwallpapers.app-lifecycle-runtime-2.7.0-53 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\cdc55b30b6dac8575b316f082d35ef0a\transformed\lifecycle-runtime-2.7.0\res
+com.example.liquidwallpapers.app-play-services-measurement-api-21.5.1-54 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\d0c352232d023bf411db93bc750b71ab\transformed\play-services-measurement-api-21.5.1\res
+com.example.liquidwallpapers.app-material-ripple-release-55 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\d3e227f69386e6212773a26a6b709ec8\transformed\material-ripple-release\res
+com.example.liquidwallpapers.app-play-services-base-18.0.1-56 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\d89b472f54e269c8decbac8fe3e1ea96\transformed\play-services-base-18.0.1\res
+com.example.liquidwallpapers.app-hilt-navigation-compose-1.2.0-57 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\db3c145ee83bc285c135e09a4dfabce7\transformed\hilt-navigation-compose-1.2.0\res
+com.example.liquidwallpapers.app-hilt-navigation-1.2.0-58 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\dedb11dd3439d31d838569b0e1fef50f\transformed\hilt-navigation-1.2.0\res
+com.example.liquidwallpapers.app-material-release-59 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\dfc8a02a661dba869f79d1a02dcfda39\transformed\material-release\res
+com.example.liquidwallpapers.app-lifecycle-runtime-ktx-2.7.0-60 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\f5259ec15d156e93f4f095b81411816d\transformed\lifecycle-runtime-ktx-2.7.0\res
+com.example.liquidwallpapers.app-ui-test-manifest-1.6.3-61 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\f6f8ee90c527c83c1f9ffc2de9e90b18\transformed\ui-test-manifest-1.6.3\res
+com.example.liquidwallpapers.app-annotation-experimental-1.4.0-62 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\f79a16e42c4d191d1361c6c174234fd4\transformed\annotation-experimental-1.4.0\res
+com.example.liquidwallpapers.app-play-services-basement-18.1.0-63 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\fee471260191e9ab42c7695cdc1641bc\transformed\play-services-basement-18.1.0\res
+com.example.liquidwallpapers.app-core-ktx-1.12.0-64 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\ff4586bebf56c3af9f5552f8fabdf4b3\transformed\core-ktx-1.12.0\res
+com.example.liquidwallpapers.app-resValues-65 D:\My Wallpaper App\app\build\generated\res\resValues\debug
+com.example.liquidwallpapers.app-updated_navigation_xml-66 D:\My Wallpaper App\app\build\generated\updated_navigation_xml\debug
+com.example.liquidwallpapers.app-packageDebugResources-67 D:\My Wallpaper App\app\build\intermediates\incremental\debug\packageDebugResources\merged.dir
+com.example.liquidwallpapers.app-packageDebugResources-68 D:\My Wallpaper App\app\build\intermediates\incremental\debug\packageDebugResources\stripped.dir
+com.example.liquidwallpapers.app-debug-69 D:\My Wallpaper App\app\build\intermediates\merged_res\debug\mergeDebugResources
+com.example.liquidwallpapers.app-debug-70 D:\My Wallpaper App\app\src\debug\res
+com.example.liquidwallpapers.app-main-71 D:\My Wallpaper App\app\src\main\res

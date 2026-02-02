@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "125525812549",
+    "project_id": "relicwall-25ef1",
+    "storage_bucket": "relicwall-25ef1.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:125525812549:android:1a465354996d1668608a2c",
+        "android_client_info": {
+          "package_name": "com.example.liquidwall"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD78Za5wkGvsgiMb1FFzrXo3P2n_-ns2wU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

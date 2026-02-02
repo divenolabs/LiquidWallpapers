@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Liquid Wallpapers</string>
+    <string name="launcher_name">LiquidWall</string>
+    <style name="Theme.LiquidWallpapers" parent="android:Theme.Material.Light.NoActionBar">
+
+        <item name="android:windowSplashScreenBackground">#000000</item>
+
+        <item name="android:windowBackground">#000000</item>
+
+        <item name="android:statusBarColor">@android:color/transparent</item>
+
+        <item name="android:windowLightStatusBar">false</item>
+
+    </style>
+</resources>
