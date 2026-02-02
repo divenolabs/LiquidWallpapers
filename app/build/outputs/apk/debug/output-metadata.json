@@ -4,7 +4,7 @@
     "type": "APK",
     "kind": "Directory"
   },
-  "applicationId": "com.divenolabs.liquidwall",
+  "applicationId": "com.example.liquidwall",
   "variantName": "debug",
   "elements": [
     {

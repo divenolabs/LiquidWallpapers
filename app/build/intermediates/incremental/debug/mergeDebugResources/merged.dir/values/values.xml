@@ -152,6 +152,11 @@
     <string name="fallback_menu_item_copy_link">Copy link</string>
     <string name="fallback_menu_item_open_in_browser">Open in browser</string>
     <string name="fallback_menu_item_share_link">Share link</string>
+    <string name="gcm_defaultSenderId" translatable="false">125525812549</string>
+    <string name="google_api_key" translatable="false">AIzaSyD78Za5wkGvsgiMb1FFzrXo3P2n_-ns2wU</string>
+    <string name="google_app_id" translatable="false">1:125525812549:android:1a465354996d1668608a2c</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyD78Za5wkGvsgiMb1FFzrXo3P2n_-ns2wU</string>
+    <string name="google_storage_bucket" translatable="false">relicwall-25ef1.firebasestorage.app</string>
     <string name="in_progress">In progress</string>
     <string name="indeterminate">Partially checked</string>
     <string name="launcher_name">LiquidWall</string>
@@ -219,6 +224,7 @@
     <string name="not_selected">Not selected</string>
     <string name="off">Off</string>
     <string name="on">On</string>
+    <string name="project_id" translatable="false">relicwall-25ef1</string>
     <string name="range_end">"Range end"</string>
     <string name="range_start">"Range start"</string>
     <string name="selected">Selected</string>

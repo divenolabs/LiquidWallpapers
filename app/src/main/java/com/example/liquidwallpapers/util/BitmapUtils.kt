@@ -13,55 +13,73 @@ import android.renderscript.ScriptIntrinsicBlur
 
 object BitmapUtils {
 
+    /**
+     * Master function to apply both Blur and Brightness (Dimming)
+     * @param brightness: 0f is normal. -0.5f is darker. +0.5f is brighter.
+     */
     fun applyEffects(context: Context, source: Bitmap, blurRadius: Float, brightness: Float): Bitmap {
-        // 1. Create a mutable copy to edit
-        var finalBitmap = source.copy(Bitmap.Config.ARGB_8888, true)
+        var output = source
 
-        // 2. Apply Blur (Only if radius > 0)
+        // 1. Apply Blur if needed
         if (blurRadius > 0f) {
-            finalBitmap = blurBitmap(context, finalBitmap, blurRadius)
+            output = blurBitmap(context, output, blurRadius)
         }
 
-        // 3. Apply Brightness/Dimming
-        // Brightness range: -1.0f (Dark) to 0.0f (Normal)
+        // 2. Apply Brightness/Dim if needed
         if (brightness != 0f) {
-            val canvas = Canvas(finalBitmap)
-            val paint = Paint()
-            val matrix = ColorMatrix()
-
-            // Adjust brightness (Scale RGB, keep Alpha)
-            // A brightness of -0.5f means we multiply colors by 0.5 (50% darker)
-            val scale = 1f + brightness
-            matrix.setScale(scale, scale, scale, 1f)
-
-            paint.colorFilter = ColorMatrixColorFilter(matrix)
-            canvas.drawBitmap(finalBitmap, 0f, 0f, paint)
+            output = adjustBrightness(output, brightness)
         }
 
-        return finalBitmap
+        return output
     }
 
-    private fun blurBitmap(context: Context, bitmap: Bitmap, radius: Float): Bitmap {
-        return try {
-            // Cap radius at 25f (RenderScript limit)
-            val safeRadius = radius.coerceIn(0f, 25f)
-            if (safeRadius <= 0f) return bitmap
+    private fun adjustBrightness(source: Bitmap, brightness: Float): Bitmap {
+        val output = Bitmap.createBitmap(source.width, source.height, source.config)
+        val canvas = Canvas(output)
+        val paint = Paint()
+        val matrix = ColorMatrix()
 
+        // Brightness logic: scales RGB channels.
+        // 1f = normal, 0.5f = 50% brightness (dimmed), etc.
+        // We convert the offset (-0.8f to 0f) into a scale (0.2f to 1f)
+        val scale = 1f + brightness
+
+        matrix.set(floatArrayOf(
+            scale, 0f, 0f, 0f, 0f,
+            0f, scale, 0f, 0f, 0f,
+            0f, 0f, scale, 0f, 0f,
+            0f, 0f, 0f, 1f, 0f
+        ))
+
+        paint.colorFilter = ColorMatrixColorFilter(matrix)
+        canvas.drawBitmap(source, 0f, 0f, paint)
+        return output
+    }
+
+    @Suppress("DEPRECATION")
+    fun blurBitmap(context: Context, bitmap: Bitmap, radius: Float): Bitmap {
+        if (radius <= 0f) return bitmap
+
+        // RenderScript limit is 25f.
+        val safeRadius = radius.coerceIn(0f, 25f)
+
+        try {
+            val outputBitmap = Bitmap.createBitmap(bitmap)
             val rs = RenderScript.create(context)
             val input = Allocation.createFromBitmap(rs, bitmap)
-            val output = Allocation.createTyped(rs, input.type)
+            val output = Allocation.createFromBitmap(rs, outputBitmap)
             val script = ScriptIntrinsicBlur.create(rs, Element.U8_4(rs))
 
             script.setRadius(safeRadius)
             script.setInput(input)
             script.forEach(output)
-            output.copyTo(bitmap)
 
+            output.copyTo(outputBitmap)
             rs.destroy()
-            bitmap
+            return outputBitmap
         } catch (e: Exception) {
             e.printStackTrace()
-            bitmap
+            return bitmap // Return original if blur fails
         }
     }
 }

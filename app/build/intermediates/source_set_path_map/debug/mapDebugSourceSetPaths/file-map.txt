@@ -63,10 +63,11 @@ com.example.liquidwallpapers.app-ui-test-manifest-1.6.3-61 C:\Users\rahul\.gradl
 com.example.liquidwallpapers.app-annotation-experimental-1.4.0-62 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\f79a16e42c4d191d1361c6c174234fd4\transformed\annotation-experimental-1.4.0\res
 com.example.liquidwallpapers.app-play-services-basement-18.1.0-63 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\fee471260191e9ab42c7695cdc1641bc\transformed\play-services-basement-18.1.0\res
 com.example.liquidwallpapers.app-core-ktx-1.12.0-64 C:\Users\rahul\.gradle\caches\9.0-milestone-1\transforms\ff4586bebf56c3af9f5552f8fabdf4b3\transformed\core-ktx-1.12.0\res
-com.example.liquidwallpapers.app-resValues-65 D:\My Wallpaper App\app\build\generated\res\resValues\debug
-com.example.liquidwallpapers.app-updated_navigation_xml-66 D:\My Wallpaper App\app\build\generated\updated_navigation_xml\debug
-com.example.liquidwallpapers.app-packageDebugResources-67 D:\My Wallpaper App\app\build\intermediates\incremental\debug\packageDebugResources\merged.dir
-com.example.liquidwallpapers.app-packageDebugResources-68 D:\My Wallpaper App\app\build\intermediates\incremental\debug\packageDebugResources\stripped.dir
-com.example.liquidwallpapers.app-debug-69 D:\My Wallpaper App\app\build\intermediates\merged_res\debug\mergeDebugResources
-com.example.liquidwallpapers.app-debug-70 D:\My Wallpaper App\app\src\debug\res
-com.example.liquidwallpapers.app-main-71 D:\My Wallpaper App\app\src\main\res
+com.example.liquidwallpapers.app-res-65 D:\My Wallpaper App\app\build\generated\res\processDebugGoogleServices
+com.example.liquidwallpapers.app-resValues-66 D:\My Wallpaper App\app\build\generated\res\resValues\debug
+com.example.liquidwallpapers.app-updated_navigation_xml-67 D:\My Wallpaper App\app\build\generated\updated_navigation_xml\debug
+com.example.liquidwallpapers.app-packageDebugResources-68 D:\My Wallpaper App\app\build\intermediates\incremental\debug\packageDebugResources\merged.dir
+com.example.liquidwallpapers.app-packageDebugResources-69 D:\My Wallpaper App\app\build\intermediates\incremental\debug\packageDebugResources\stripped.dir
+com.example.liquidwallpapers.app-debug-70 D:\My Wallpaper App\app\build\intermediates\merged_res\debug\mergeDebugResources
+com.example.liquidwallpapers.app-debug-71 D:\My Wallpaper App\app\src\debug\res
+com.example.liquidwallpapers.app-main-72 D:\My Wallpaper App\app\src\main\res

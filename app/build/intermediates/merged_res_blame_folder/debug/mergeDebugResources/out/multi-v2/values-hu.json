@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.example.liquidwallpapers.app-mergeDebugResources-67:/values-hu/values-hu.xml",
+            "outputFile": "com.example.liquidwallpapers.app-mergeDebugResources-68:/values-hu/values-hu.xml",
             "map": [
                 {
                     "source": "C:\\Users\\rahul\\.gradle\\caches\\9.0-milestone-1\\transforms\\fee471260191e9ab42c7695cdc1641bc\\transformed\\play-services-basement-18.1.0\\res\\values-hu\\values.xml",
