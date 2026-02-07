@@ -2,7 +2,9 @@ package com.example.liquidwallpapers.ui.screens.details
 
 import android.app.WallpaperManager
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Build
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
@@ -15,6 +17,7 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.*
@@ -48,8 +51,12 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.core.graphics.drawable.toBitmap
@@ -149,7 +156,6 @@ fun DetailScreen(
             // --- CANVAS (Handles Zoom + Live Preview of Dim/Blur) ---
             val previewDimMatrix = remember(dimValue) {
                 val m = ColorMatrix()
-                // FIX: Use setToScale for Compose ColorMatrix
                 val scaleV = 1f - dimValue
                 m.setToScale(scaleV, scaleV, scaleV, 1f)
                 m
@@ -158,7 +164,6 @@ fun DetailScreen(
             Canvas(
                 modifier = Modifier
                     .fillMaxSize()
-                    // Apply Blur (API 31+ only for live preview, others will see it on save)
                     .then(
                         if (Build.VERSION.SDK_INT >= 31 && blurValue > 0) {
                             Modifier.blur(blurValue.dp)
@@ -243,7 +248,7 @@ fun DetailScreen(
 
                 Spacer(modifier = Modifier.width(16.dp))
 
-                // EDIT Button (New)
+                // EDIT Button
                 Box(
                     modifier = Modifier
                         .size(50.dp)
@@ -256,15 +261,17 @@ fun DetailScreen(
 
                 Spacer(modifier = Modifier.width(16.dp))
 
-                // Download Button (Apply Edits First)
+                // Download Button
                 Box(
                     modifier = Modifier
                         .size(50.dp)
                         .highContrastGlass(CircleShape)
                         .bounceClick {
                             if (bitmap != null) {
+                                // 1. TRACK DOWNLOAD (Required by Unsplash)
+                                viewModel.trackDownload(wallpaper)
+
                                 scope.launch {
-                                    // Apply effects before saving
                                     val finalBm = withContext(Dispatchers.Default) {
                                         BitmapUtils.applyEffects(context, bitmap!!, blurValue, -dimValue)
                                     }
@@ -286,59 +293,94 @@ fun DetailScreen(
             exit = slideOutVertically(tween(500)) { it },
             modifier = Modifier.align(Alignment.BottomCenter)
         ) {
-            Box(
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .navigationBarsPadding()
                     .padding(bottom = 32.dp, start = 24.dp, end = 24.dp)
-                    .fillMaxWidth()
-                    .height(80.dp)
-                    .highContrastGlass(RoundedCornerShape(24.dp))
             ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = 20.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Column(
-                        modifier = Modifier.weight(1f).padding(end = 8.dp),
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        Text(
-                            text = "Preview & adjust",
-                            color = Color.White.copy(alpha = 0.8f),
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            style = MaterialTheme.typography.labelMedium
-                        )
-                        Text(
-                            text = "Set Your Wallpaper",
-                            color = Color.White,
-                            style = MaterialTheme.typography.titleMedium
-                        )
+                // --- ATTRIBUTION TEXT (Required by Unsplash) ---
+                // "Photo by [Name] on Unsplash"
+                val annotatedString = buildAnnotatedString {
+                    append("Photo by ")
+                    pushStringAnnotation(tag = "user", annotation = wallpaper.photographerUrl)
+                    withStyle(style = SpanStyle(textDecoration = TextDecoration.Underline, fontWeight = FontWeight.Bold)) {
+                        append(wallpaper.photographer)
                     }
+                    pop()
+                    append(" on ")
+                    pushStringAnnotation(tag = "unsplash", annotation = "https://unsplash.com/?utm_source=LiquidWallpapers&utm_medium=referral")
+                    withStyle(style = SpanStyle(textDecoration = TextDecoration.Underline, fontWeight = FontWeight.Bold)) {
+                        append("Unsplash")
+                    }
+                    pop()
+                }
 
-                    Button(
-                        onClick = { if (bitmap != null) showDialog = true },
-                        colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
-                        contentPadding = PaddingValues(0.dp),
-                        shape = CircleShape,
+                Text(
+                    text = annotatedString,
+                    color = Color.White.copy(alpha = 0.7f),
+                    style = MaterialTheme.typography.labelSmall,
+                    modifier = Modifier
+                        .padding(bottom = 12.dp)
+                        .clickable {
+                            // Handle click logic manually for now, or just open the user profile
+                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(wallpaper.photographerUrl + "?utm_source=LiquidWallpapers&utm_medium=referral"))
+                            context.startActivity(intent)
+                        }
+                )
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(80.dp)
+                        .highContrastGlass(RoundedCornerShape(24.dp))
+                ) {
+                    Row(
                         modifier = Modifier
-                            .height(48.dp)
-                            .bounceClick { if (bitmap != null) showDialog = true }
-                            .background(
-                                brush = Brush.horizontalGradient(colors = listOf(LiquidOrange, Color(0xFFB02A02))),
-                                shape = CircleShape
-                            )
+                            .fillMaxSize()
+                            .padding(horizontal = 20.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        if (isProcessing) {
-                            CircularProgressIndicator(color = Color.White, modifier = Modifier.size(20.dp))
-                        } else {
-                            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(horizontal = 20.dp)) {
-                                Icon(Icons.Rounded.Check, null, tint = Color.White, modifier = Modifier.size(18.dp))
-                                Spacer(Modifier.width(8.dp))
-                                Text("Apply", color = Color.White, fontWeight = FontWeight.SemiBold)
+                        Column(
+                            modifier = Modifier.weight(1f).padding(end = 8.dp),
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            Text(
+                                text = "Preview & adjust",
+                                color = Color.White.copy(alpha = 0.8f),
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                style = MaterialTheme.typography.labelMedium
+                            )
+                            Text(
+                                text = "Set Your Wallpaper",
+                                color = Color.White,
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                        }
+
+                        Button(
+                            onClick = { if (bitmap != null) showDialog = true },
+                            colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
+                            contentPadding = PaddingValues(0.dp),
+                            shape = CircleShape,
+                            modifier = Modifier
+                                .height(48.dp)
+                                .bounceClick { if (bitmap != null) showDialog = true }
+                                .background(
+                                    brush = Brush.horizontalGradient(colors = listOf(LiquidOrange, Color(0xFFB02A02))),
+                                    shape = CircleShape
+                                )
+                        ) {
+                            if (isProcessing) {
+                                CircularProgressIndicator(color = Color.White, modifier = Modifier.size(20.dp))
+                            } else {
+                                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(horizontal = 20.dp)) {
+                                    Icon(Icons.Rounded.Check, null, tint = Color.White, modifier = Modifier.size(18.dp))
+                                    Spacer(Modifier.width(8.dp))
+                                    Text("Apply", color = Color.White, fontWeight = FontWeight.SemiBold)
+                                }
                             }
                         }
                     }
@@ -404,24 +446,27 @@ fun DetailScreen(
             }
         }
 
-        // --- WALLPAPER OPTIONS DIALOG (Apply Logic Update) ---
+        // --- WALLPAPER OPTIONS DIALOG ---
         if (showDialog && bitmap != null) {
             WallpaperOptionDialog(
                 onDismiss = { showDialog = false },
                 onOptionSelected = { flag ->
                     showDialog = false
                     isProcessing = true
+
+                    // 1. TRACK DOWNLOAD (Required by Unsplash)
+                    viewModel.trackDownload(wallpaper)
+
                     scope.launch {
-                        // 1. Process the Bitmap First (Blur + Dim)
-                        // Note: We use negative dimValue for brightness reduction
+                        // 2. Process Bitmap
                         val processedBitmap = withContext(Dispatchers.Default) {
                             BitmapUtils.applyEffects(context, bitmap!!, blurValue, -dimValue)
                         }
 
-                        // 2. Then Crop and Set
+                        // 3. Set Wallpaper
                         cropAndSetWallpaper(
                             context = context,
-                            originalBitmap = processedBitmap, // Use processed bitmap
+                            originalBitmap = processedBitmap,
                             screenWidth = screenWidth,
                             screenHeight = screenHeight,
                             offsetX = offsetX,

@@ -10,6 +10,7 @@ import android.renderscript.Allocation
 import android.renderscript.Element
 import android.renderscript.RenderScript
 import android.renderscript.ScriptIntrinsicBlur
+import androidx.core.graphics.createBitmap
 
 object BitmapUtils {
 
@@ -34,7 +35,12 @@ object BitmapUtils {
     }
 
     private fun adjustBrightness(source: Bitmap, brightness: Float): Bitmap {
-        val output = Bitmap.createBitmap(source.width, source.height, source.config)
+        // FIX: Added '?: Bitmap.Config.ARGB_8888' to handle null configs safely
+        val safeConfig = source.config ?: Bitmap.Config.ARGB_8888
+
+        // Using KTX createBitmap or standard Bitmap.createBitmap with the safe config
+        val output = Bitmap.createBitmap(source.width, source.height, safeConfig)
+
         val canvas = Canvas(output)
         val paint = Paint()
         val matrix = ColorMatrix()
@@ -64,7 +70,10 @@ object BitmapUtils {
         val safeRadius = radius.coerceIn(0f, 25f)
 
         try {
-            val outputBitmap = Bitmap.createBitmap(bitmap)
+            // FIX: Ensure we create a MUTABLE copy with a valid config
+            val safeConfig = bitmap.config ?: Bitmap.Config.ARGB_8888
+            val outputBitmap = bitmap.copy(safeConfig, true)
+
             val rs = RenderScript.create(context)
             val input = Allocation.createFromBitmap(rs, bitmap)
             val output = Allocation.createFromBitmap(rs, outputBitmap)

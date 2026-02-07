@@ -8,13 +8,12 @@ import javax.inject.Inject
 
 class WallpaperRepository @Inject constructor(
     private val api: UnsplashApi,
-    private val dao: WallpaperDao // <--- Added: Connects to the Database
+    private val dao: WallpaperDao
 ) {
 
     // 1. Get Founder's Collection
     suspend fun getFoundersCollection(): List<Wallpaper> {
         return try {
-            // We filter this too, just in case a low-res image slipped into your collection
             api.getCollectionPhotos("n20iOQXHKFU", 1, 10)
                 .filter { it.height >= 3000 }
                 .map { it.toDomainModel() }
@@ -28,7 +27,7 @@ class WallpaperRepository @Inject constructor(
     suspend fun searchPhotos(query: String, page: Int): List<Wallpaper> {
         return try {
             api.searchPhotos(query, page, 30, "portrait").results
-                .filter { it.height >= 3000 } // <--- THE FILTER (Must be taller than 3000px)
+                .filter { it.height >= 3000 }
                 .map { it.toDomainModel() }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -40,11 +39,23 @@ class WallpaperRepository @Inject constructor(
     suspend fun getEditorialPhotos(page: Int): List<Wallpaper> {
         return try {
             api.getEditorialPhotos(page, 30)
-                .filter { it.height >= 3000 } // <--- THE FILTER
+                .filter { it.height >= 3000 }
                 .map { it.toDomainModel() }
         } catch (e: Exception) {
             e.printStackTrace()
             emptyList()
+        }
+    }
+
+    // --- NEW: UNSPLASH TRACKING (Required for Production) ---
+    // This function fires the signal to Unsplash when a user downloads/sets a wallpaper
+    suspend fun trackDownload(downloadLocation: String) {
+        try {
+            // We just hit the URL; we don't need the response data
+            api.trackDownload(downloadLocation)
+        } catch (e: Exception) {
+            // If tracking fails (e.g., bad internet), don't crash the app
+            e.printStackTrace()
         }
     }
 

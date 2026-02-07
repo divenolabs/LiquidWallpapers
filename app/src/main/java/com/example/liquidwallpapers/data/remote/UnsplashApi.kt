@@ -8,6 +8,7 @@ import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Path
 import retrofit2.http.Query
+import retrofit2.http.Url // <--- NEW IMPORT: Required for tracking
 
 interface UnsplashApi {
 
@@ -15,7 +16,6 @@ interface UnsplashApi {
     suspend fun getEditorialPhotos(
         @Query("page") page: Int,
         @Query("per_page") perPage: Int,
-        // FIX: Use the secure key from BuildConfig instead of the hardcoded string
         @Header("Authorization") authHeader: String = "Client-ID ${BuildConfig.UNSPLASH_KEY}"
     ): List<UnsplashPhoto>
 
@@ -35,4 +35,12 @@ interface UnsplashApi {
         @Query("per_page") perPage: Int,
         @Header("Authorization") authHeader: String = "Client-ID ${BuildConfig.UNSPLASH_KEY}"
     ): List<UnsplashPhoto>
+
+    // --- NEW: Required for Unsplash Production Approval ---
+    // This hits the special "download_location" URL to count the download
+    @GET
+    suspend fun trackDownload(
+        @Url url: String,
+        @Header("Authorization") authHeader: String = "Client-ID ${BuildConfig.UNSPLASH_KEY}"
+    )
 }

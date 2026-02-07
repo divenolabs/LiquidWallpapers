@@ -53,7 +53,10 @@ object AppModule {
             app,
             WallpaperDatabase::class.java,
             "liquid_wallpapers_db"
-        ).build()
+        )
+            // FIX: This prevents crashes when you change the database structure
+            .fallbackToDestructiveMigration()
+            .build()
     }
 
     @Provides
@@ -62,8 +65,7 @@ object AppModule {
         return db.wallpaperDao()
     }
 
-    // --- Repository Injection (FIXED) ---
-    // Now we pass both API and DAO to the repository
+    // --- Repository Injection ---
     @Provides
     @Singleton
     fun provideRepository(api: UnsplashApi, dao: WallpaperDao): WallpaperRepository {

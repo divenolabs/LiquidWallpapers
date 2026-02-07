@@ -19,16 +19,20 @@ val unsplashKey = unsplashProperties.getProperty("UNSPLASH_ACCESS_KEY") ?: ""
 // ----------------------
 
 android {
+    // Keep namespace the same to avoid breaking your imports
     namespace = "com.example.liquidwallpapers"
-    // FIX: Reverted to 34 (Android 14) to fix the RED error if you lack SDK 35
-    compileSdk = 34
+
+    // Android 15 (Required by Google)
+    compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.liquidwall"
+        // FIX: CHANGED TO MATCH YOUR PLAY STORE ID
+        applicationId = "com.divenolabs.liquidwall"
+
         minSdk = 26
-        targetSdk = 34
-        versionCode = 2
-        versionName = "1.2"
+        targetSdk = 35
+        versionCode = 4
+        versionName = "1.3"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -68,9 +72,6 @@ android {
     }
 }
 
-// FIX: I have organized these to silence as many warnings as possible.
-// Note: Android Studio might still suggest "Use version catalog",
-// but you can safely IGNORE those yellow warnings. They do not break the app.
 dependencies {
     val composeBom = platform("androidx.compose:compose-bom:2024.02.02")
     implementation(composeBom)

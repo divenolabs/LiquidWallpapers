@@ -38,4 +38,15 @@ class DetailViewModel @Inject constructor(
             }
         }
     }
+
+    // --- NEW: TRACK DOWNLOAD (Required for Unsplash Production) ---
+    fun trackDownload(wallpaper: Wallpaper) {
+        viewModelScope.launch {
+            // Unsplash requires us to hit this specific URL to count the download
+            val downloadUrl = wallpaper.downloadLocation
+            if (downloadUrl.isNotEmpty()) {
+                repository.trackDownload(downloadUrl)
+            }
+        }
+    }
 }
