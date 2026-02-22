@@ -31,6 +31,7 @@ import androidx.compose.material.icons.rounded.Download
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.FavoriteBorder
+import androidx.compose.material.icons.rounded.TextFields
 import androidx.compose.material.icons.rounded.Wallpaper
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -61,6 +62,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.core.graphics.drawable.toBitmap
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import coil.ImageLoader
 import coil.request.ImageRequest
 import coil.request.SuccessResult
@@ -73,17 +75,25 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 import kotlin.math.max
 import kotlin.math.roundToInt
 
 @Composable
 fun DetailScreen(
     wallpaper: Wallpaper,
-    onBack: () -> Unit,
+    navController: NavController,
     viewModel: DetailViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
+
+    // --- CHECK FOR EDITED IMAGE RESULT ---
+    val editedImageUri = navController.currentBackStackEntry
+        ?.savedStateHandle
+        ?.getStateFlow<String?>("edited_image_uri", null)
+        ?.collectAsState()
 
     // Database Status
     LaunchedEffect(wallpaper.id) {
@@ -98,8 +108,8 @@ fun DetailScreen(
 
     // --- EDITOR STATE ---
     var isEditing by remember { mutableStateOf(false) }
-    var blurValue by remember { mutableFloatStateOf(0f) }   // 0f to 25f
-    var dimValue by remember { mutableFloatStateOf(0f) }    // 0f to 0.8f
+    var blurValue by remember { mutableFloatStateOf(0f) }
+    var dimValue by remember { mutableFloatStateOf(0f) }
 
     // UI Animations
     var controlsVisible by remember { mutableStateOf(false) }
@@ -114,11 +124,16 @@ fun DetailScreen(
     var offsetY by remember { mutableFloatStateOf(0f) }
     var minScale by remember { mutableFloatStateOf(1f) }
 
-    // Load Image
-    LaunchedEffect(wallpaper.url) {
+    // Load Image (Original OR Edited)
+    val imageUrlToLoad = editedImageUri?.value ?: wallpaper.url
+
+    LaunchedEffect(imageUrlToLoad) {
+        // Reset processing state
+        bitmap = null
+
         val loader = ImageLoader(context)
         val request = ImageRequest.Builder(context)
-            .data(wallpaper.url)
+            .data(imageUrlToLoad)
             .allowHardware(false)
             .build()
         val result = loader.execute(request)
@@ -153,7 +168,7 @@ fun DetailScreen(
                 offsetY = (screenHeight - scaledHeight) / 2f
             }
 
-            // --- CANVAS (Handles Zoom + Live Preview of Dim/Blur) ---
+            // --- CANVAS ---
             val previewDimMatrix = remember(dimValue) {
                 val m = ColorMatrix()
                 val scaleV = 1f - dimValue
@@ -204,7 +219,7 @@ fun DetailScreen(
 
         // --- TOP CONTROLS ---
         AnimatedVisibility(
-            visible = controlsVisible && !isEditing, // Hide top bar when editing
+            visible = controlsVisible && !isEditing,
             enter = slideInVertically(tween(500)) { -it },
             exit = slideOutVertically(tween(500)) { -it },
             modifier = Modifier
@@ -215,73 +230,83 @@ fun DetailScreen(
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 // Back Button
                 Box(
                     modifier = Modifier
                         .size(50.dp)
                         .highContrastGlass(CircleShape)
-                        .bounceClick { onBack() },
+                        .bounceClick { navController.popBackStack() },
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(Icons.AutoMirrored.Rounded.ArrowBack, "Back", tint = Color.White, modifier = Modifier.size(24.dp))
                 }
 
-                Spacer(modifier = Modifier.weight(1f))
+                Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
 
-                // Favorite Button
-                Box(
-                    modifier = Modifier
-                        .size(50.dp)
-                        .highContrastGlass(CircleShape)
-                        .bounceClick { viewModel.toggleFavorite(wallpaper) },
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        imageVector = if (isFavorite) Icons.Rounded.Favorite else Icons.Rounded.FavoriteBorder,
-                        contentDescription = "Favorite",
-                        tint = if (isFavorite) Color(0xFFFF4040) else Color.White,
-                        modifier = Modifier.size(24.dp)
-                    )
-                }
+                    // 1. TEXT TOOL BUTTON
+                    Box(
+                        modifier = Modifier
+                            .size(50.dp)
+                            .highContrastGlass(CircleShape)
+                            .bounceClick {
+                                val encodedUrl = URLEncoder.encode(imageUrlToLoad.toString(), StandardCharsets.UTF_8.toString())
+                                navController.navigate("text_editor/$encodedUrl")
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(Icons.Rounded.TextFields, "Add Text", tint = Color.White, modifier = Modifier.size(24.dp))
+                    }
 
-                Spacer(modifier = Modifier.width(16.dp))
+                    // 2. Favorite Button
+                    Box(
+                        modifier = Modifier
+                            .size(50.dp)
+                            .highContrastGlass(CircleShape)
+                            .bounceClick { viewModel.toggleFavorite(wallpaper) },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = if (isFavorite) Icons.Rounded.Favorite else Icons.Rounded.FavoriteBorder,
+                            contentDescription = "Favorite",
+                            tint = if (isFavorite) Color(0xFFFF4040) else Color.White,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
 
-                // EDIT Button
-                Box(
-                    modifier = Modifier
-                        .size(50.dp)
-                        .highContrastGlass(CircleShape)
-                        .bounceClick { isEditing = true },
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(Icons.Rounded.Edit, "Edit", tint = Color.White, modifier = Modifier.size(24.dp))
-                }
+                    // 3. Edit Button
+                    Box(
+                        modifier = Modifier
+                            .size(50.dp)
+                            .highContrastGlass(CircleShape)
+                            .bounceClick { isEditing = true },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(Icons.Rounded.Edit, "Edit", tint = Color.White, modifier = Modifier.size(24.dp))
+                    }
 
-                Spacer(modifier = Modifier.width(16.dp))
-
-                // Download Button
-                Box(
-                    modifier = Modifier
-                        .size(50.dp)
-                        .highContrastGlass(CircleShape)
-                        .bounceClick {
-                            if (bitmap != null) {
-                                // 1. TRACK DOWNLOAD (Required by Unsplash)
-                                viewModel.trackDownload(wallpaper)
-
-                                scope.launch {
-                                    val finalBm = withContext(Dispatchers.Default) {
-                                        BitmapUtils.applyEffects(context, bitmap!!, blurValue, -dimValue)
+                    // 4. Download Button
+                    Box(
+                        modifier = Modifier
+                            .size(50.dp)
+                            .highContrastGlass(CircleShape)
+                            .bounceClick {
+                                if (bitmap != null) {
+                                    viewModel.trackDownload(wallpaper)
+                                    scope.launch {
+                                        val finalBm = withContext(Dispatchers.Default) {
+                                            BitmapUtils.applyEffects(context, bitmap!!, blurValue, -dimValue)
+                                        }
+                                        ImageHelper.saveImageToGallery(context, finalBm, wallpaper.title)
                                     }
-                                    ImageHelper.saveImageToGallery(context, finalBm, wallpaper.title)
                                 }
-                            }
-                        },
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(Icons.Rounded.Download, "Download", tint = Color.White, modifier = Modifier.size(24.dp))
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(Icons.Rounded.Download, "Download", tint = Color.White, modifier = Modifier.size(24.dp))
+                    }
                 }
             }
         }
@@ -299,21 +324,36 @@ fun DetailScreen(
                     .navigationBarsPadding()
                     .padding(bottom = 32.dp, start = 24.dp, end = 24.dp)
             ) {
-                // --- ATTRIBUTION TEXT (Required by Unsplash) ---
-                // "Photo by [Name] on Unsplash"
+                // --- DYNAMIC ATTRIBUTION LOGIC (UPDATED) ---
+                val isPexels = wallpaper.url.contains("pexels", ignoreCase = true)
+                // Check if it's from GitHub (Founder's Collection)
+                val isGithub = wallpaper.url.contains("github", ignoreCase = true) || wallpaper.url.contains("raw.githubusercontent", ignoreCase = true)
+
                 val annotatedString = buildAnnotatedString {
-                    append("Photo by ")
-                    pushStringAnnotation(tag = "user", annotation = wallpaper.photographerUrl)
-                    withStyle(style = SpanStyle(textDecoration = TextDecoration.Underline, fontWeight = FontWeight.Bold)) {
-                        append(wallpaper.photographer)
+                    if (isGithub) {
+                        // CASE 1: Founder's Collection (GitHub)
+                        append("Curated by ")
+                        pushStringAnnotation(tag = "URL", annotation = "https://www.instagram.com/rahulshekhawatb")
+                        withStyle(style = SpanStyle(textDecoration = TextDecoration.Underline, fontWeight = FontWeight.Bold, color = Color.White)) {
+                            append("Rahul Shekhawat")
+                        }
+                        pop()
+                    } else {
+                        // CASE 2 & 3: Pexels or Unsplash (Standard Attribution)
+                        val sourceName = if (isPexels) "Pexels" else "Unsplash"
+
+                        append("Photo by ")
+                        pushStringAnnotation(tag = "URL", annotation = wallpaper.photographerUrl)
+                        withStyle(style = SpanStyle(textDecoration = TextDecoration.Underline, fontWeight = FontWeight.Bold)) {
+                            append(wallpaper.photographer)
+                        }
+                        pop()
+
+                        append(" on ")
+                        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                            append(sourceName)
+                        }
                     }
-                    pop()
-                    append(" on ")
-                    pushStringAnnotation(tag = "unsplash", annotation = "https://unsplash.com/?utm_source=LiquidWallpapers&utm_medium=referral")
-                    withStyle(style = SpanStyle(textDecoration = TextDecoration.Underline, fontWeight = FontWeight.Bold)) {
-                        append("Unsplash")
-                    }
-                    pop()
                 }
 
                 Text(
@@ -323,12 +363,25 @@ fun DetailScreen(
                     modifier = Modifier
                         .padding(bottom = 12.dp)
                         .clickable {
-                            // Handle click logic manually for now, or just open the user profile
-                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(wallpaper.photographerUrl + "?utm_source=LiquidWallpapers&utm_medium=referral"))
+                            // Smart Link Handling
+                            val urlToOpen = if (isGithub) {
+                                "https://www.instagram.com/rahulshekhawatb"
+                            } else if (isPexels) {
+                                wallpaper.photographerUrl
+                            } else {
+                                // Unsplash Tracking Logic
+                                if (wallpaper.photographerUrl.contains("?")) {
+                                    wallpaper.photographerUrl + "&utm_source=LiquidWallpapers&utm_medium=referral"
+                                } else {
+                                    wallpaper.photographerUrl + "?utm_source=LiquidWallpapers&utm_medium=referral"
+                                }
+                            }
+                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(urlToOpen))
                             context.startActivity(intent)
                         }
                 )
 
+                // Apply Button Bar
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -347,7 +400,7 @@ fun DetailScreen(
                             verticalArrangement = Arrangement.Center
                         ) {
                             Text(
-                                text = "Preview & adjust",
+                                text = if(editedImageUri?.value != null) "Edited Image Ready" else "Preview & adjust",
                                 color = Color.White.copy(alpha = 0.8f),
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
@@ -403,7 +456,6 @@ fun DetailScreen(
                     .padding(24.dp)
             ) {
                 Column {
-                    // Title + Done Button
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -416,31 +468,21 @@ fun DetailScreen(
                     }
 
                     Spacer(Modifier.height(16.dp))
-
-                    // DIM Slider
                     Text("Dim / Brightness", color = Color.White.copy(alpha = 0.7f), style = MaterialTheme.typography.labelMedium)
                     Slider(
                         value = dimValue,
                         onValueChange = { dimValue = it },
-                        valueRange = 0f..0.8f, // Max 80% dim
-                        colors = SliderDefaults.colors(
-                            thumbColor = LiquidOrange,
-                            activeTrackColor = LiquidOrange
-                        )
+                        valueRange = 0f..0.8f,
+                        colors = SliderDefaults.colors(thumbColor = LiquidOrange, activeTrackColor = LiquidOrange)
                     )
 
                     Spacer(Modifier.height(8.dp))
-
-                    // BLUR Slider
                     Text("Blur", color = Color.White.copy(alpha = 0.7f), style = MaterialTheme.typography.labelMedium)
                     Slider(
                         value = blurValue,
                         onValueChange = { blurValue = it },
-                        valueRange = 0f..25f, // Max RenderScript radius
-                        colors = SliderDefaults.colors(
-                            thumbColor = LiquidOrange,
-                            activeTrackColor = LiquidOrange
-                        )
+                        valueRange = 0f..25f,
+                        colors = SliderDefaults.colors(thumbColor = LiquidOrange, activeTrackColor = LiquidOrange)
                     )
                 }
             }
@@ -453,27 +495,12 @@ fun DetailScreen(
                 onOptionSelected = { flag ->
                     showDialog = false
                     isProcessing = true
-
-                    // 1. TRACK DOWNLOAD (Required by Unsplash)
                     viewModel.trackDownload(wallpaper)
-
                     scope.launch {
-                        // 2. Process Bitmap
                         val processedBitmap = withContext(Dispatchers.Default) {
                             BitmapUtils.applyEffects(context, bitmap!!, blurValue, -dimValue)
                         }
-
-                        // 3. Set Wallpaper
-                        cropAndSetWallpaper(
-                            context = context,
-                            originalBitmap = processedBitmap,
-                            screenWidth = screenWidth,
-                            screenHeight = screenHeight,
-                            offsetX = offsetX,
-                            offsetY = offsetY,
-                            scale = scale,
-                            flag = flag
-                        )
+                        cropAndSetWallpaper(context, processedBitmap, screenWidth, screenHeight, offsetX, offsetY, scale, flag)
                         isProcessing = false
                     }
                 }
@@ -483,7 +510,6 @@ fun DetailScreen(
 }
 
 // --- HELPER FUNCTIONS ---
-
 suspend fun cropAndSetWallpaper(
     context: Context,
     originalBitmap: Bitmap,

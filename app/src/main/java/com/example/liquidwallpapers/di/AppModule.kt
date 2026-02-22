@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.room.Room
 import com.example.liquidwallpapers.data.local.WallpaperDao
 import com.example.liquidwallpapers.data.local.WallpaperDatabase
+import com.example.liquidwallpapers.data.remote.PexelsApi
 import com.example.liquidwallpapers.data.remote.UnsplashApi
 import com.example.liquidwallpapers.data.repository.WallpaperRepository
 import dagger.Module
@@ -20,32 +21,45 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
-    private const val BASE_URL = "https://api.unsplash.com/"
-
+    // --- Unsplash API ---
     @Provides
     @Singleton
     fun provideUnsplashApi(): UnsplashApi {
-        // 1. Create the Logger
         val logging = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         }
-
-        // 2. Add Logger to the Client
         val client = OkHttpClient.Builder()
             .addInterceptor(logging)
             .build()
 
-        // 3. Build Retrofit with the Client
         return Retrofit.Builder()
-            .baseUrl(BASE_URL)
+            .baseUrl("https://api.unsplash.com/")
             .addConverterFactory(GsonConverterFactory.create())
             .client(client)
             .build()
             .create(UnsplashApi::class.java)
     }
 
-    // --- Database Injection ---
+    // --- Pexels API ---
+    @Provides
+    @Singleton
+    fun providePexelsApi(): PexelsApi {
+        val logging = HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }
+        val client = OkHttpClient.Builder()
+            .addInterceptor(logging)
+            .build()
 
+        return Retrofit.Builder()
+            .baseUrl("https://api.pexels.com/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(client)
+            .build()
+            .create(PexelsApi::class.java)
+    }
+
+    // --- Database Injection ---
     @Provides
     @Singleton
     fun provideDatabase(app: Application): WallpaperDatabase {
@@ -54,7 +68,6 @@ object AppModule {
             WallpaperDatabase::class.java,
             "liquid_wallpapers_db"
         )
-            // FIX: This prevents crashes when you change the database structure
             .fallbackToDestructiveMigration()
             .build()
     }
@@ -65,10 +78,15 @@ object AppModule {
         return db.wallpaperDao()
     }
 
-    // --- Repository Injection ---
+    // --- Repository Injection (FIXED) ---
     @Provides
     @Singleton
-    fun provideRepository(api: UnsplashApi, dao: WallpaperDao): WallpaperRepository {
-        return WallpaperRepository(api, dao)
+    fun provideRepository(
+        unsplashApi: UnsplashApi,
+        pexelsApi: PexelsApi,      // <--- Added PexelsApi
+        dao: WallpaperDao
+    ): WallpaperRepository {
+        // FIX: Must match the order: Unsplash, Pexels, Dao
+        return WallpaperRepository(unsplashApi, pexelsApi, dao)
     }
 }

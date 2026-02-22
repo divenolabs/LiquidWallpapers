@@ -44,21 +44,17 @@ class HomeViewModel @Inject constructor(
     }
 
     fun searchWallpapers(query: String) {
-        // FIX: We do NOT clear 'wallpapers' here anymore.
-        // This prevents the screen from flashing white/empty.
         _uiState.update { it.copy(searchQuery = query, isLoading = true) }
 
         currentPage = 1
 
         viewModelScope.launch {
-            // Fetch new data first
-            val newWallpapers = if (query.isBlank()) {
-                repository.getEditorialPhotos(currentPage)
-            } else {
-                repository.searchPhotos(query, currentPage)
-            }
+            // FIX: If query is blank, force "wallpapers" keyword instead of random photos
+            val effectiveQuery = if (query.isBlank()) "wallpapers" else query
 
-            // THEN update the UI in one smooth frame
+            // We now use searchPhotos for EVERYTHING to ensure strict filtering
+            val newWallpapers = repository.searchPhotos(effectiveQuery, currentPage)
+
             _uiState.update {
                 it.copy(
                     wallpapers = newWallpapers,
@@ -75,11 +71,12 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
 
-            val newWallpapers = if (_uiState.value.searchQuery.isBlank()) {
-                repository.getEditorialPhotos(currentPage)
-            } else {
-                repository.searchPhotos(_uiState.value.searchQuery, currentPage)
-            }
+            // FIX: Determine query. If blank, default to "wallpapers"
+            val currentQuery = _uiState.value.searchQuery
+            val effectiveQuery = if (currentQuery.isBlank()) "wallpapers" else currentQuery
+
+            // Always call searchPhotos to keep the feed clean
+            val newWallpapers = repository.searchPhotos(effectiveQuery, currentPage)
 
             _uiState.update {
                 it.copy(

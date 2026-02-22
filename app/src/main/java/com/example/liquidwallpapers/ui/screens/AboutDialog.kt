@@ -1,7 +1,9 @@
 package com.example.liquidwallpapers.ui.screens
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -15,8 +17,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -34,6 +39,7 @@ import com.example.liquidwallpapers.ui.theme.LiquidOrange
 fun AboutDialog(onDismiss: () -> Unit) {
     val uriHandler = LocalUriHandler.current
     val scrollState = rememberScrollState()
+    val instaUrl = "https://www.instagram.com/rahulshekhawatb"
 
     Dialog(onDismissRequest = onDismiss) {
         // Main dialog box with glass effect
@@ -41,12 +47,11 @@ fun AboutDialog(onDismiss: () -> Unit) {
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(24.dp))
-                // FIX 1: Glassy, transparent background
                 .background(
                     brush = Brush.verticalGradient(
                         colors = listOf(
-                            Color.Black.copy(alpha = 0.6f), // More transparent at top
-                            Color.Black.copy(alpha = 0.85f) // Darker at bottom
+                            Color.Black.copy(alpha = 0.6f),
+                            Color.Black.copy(alpha = 0.85f)
                         )
                     )
                 )
@@ -156,8 +161,28 @@ fun AboutDialog(onDismiss: () -> Unit) {
                 HorizontalDivider(color = Color.White.copy(alpha = 0.1f))
                 Spacer(modifier = Modifier.height(16.dp))
 
+                // --- SOCIALS (Instagram) ---
                 Text(
-                    text = "Crafted with precision in Jaipur, India.",
+                    text = "Connect with me",
+                    color = Color.Gray,
+                    style = MaterialTheme.typography.labelSmall,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+
+                // INSTAGRAM ICON BUTTON
+                Box(
+                    modifier = Modifier
+                        .clip(CircleShape)
+                        .clickable { uriHandler.openUri(instaUrl) }
+                        .padding(8.dp)
+                ) {
+                    InstagramLogo()
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text(
+                    text = "Solving my own problems.",
                     color = Color.Gray,
                     style = MaterialTheme.typography.labelSmall
                 )
@@ -169,12 +194,12 @@ fun AboutDialog(onDismiss: () -> Unit) {
                 Spacer(modifier = Modifier.height(16.dp))
             }
 
-            // FIX 2: Close Button moved to Top-Right
+            // Close Button moved to Top-Right
             IconButton(
                 onClick = onDismiss,
                 modifier = Modifier
                     .align(Alignment.TopEnd)
-                    .padding(16.dp) // Padding from the edge
+                    .padding(16.dp)
                     .background(Color.White.copy(alpha = 0.1f), CircleShape)
                     .size(32.dp)
             ) {
@@ -197,4 +222,36 @@ fun SectionHeader(title: String) {
         style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
         modifier = Modifier.padding(bottom = 8.dp)
     )
+}
+
+// --- CUSTOM INSTAGRAM ICON ---
+@Composable
+fun InstagramLogo() {
+    val instaGradient = listOf(
+        Color(0xFF833AB4), // Purple
+        Color(0xFFFD1D1D), // Red/Pink
+        Color(0xFFF77737)  // Orange
+    )
+    val brush = Brush.linearGradient(colors = instaGradient)
+
+    Canvas(modifier = Modifier.size(32.dp)) {
+        // 1. Outer Rounded Rectangle
+        drawRoundRect(
+            brush = brush,
+            cornerRadius = CornerRadius(8.dp.toPx(), 8.dp.toPx()),
+            style = Stroke(width = 3.dp.toPx())
+        )
+        // 2. Inner Circle
+        drawCircle(
+            brush = brush,
+            radius = 5.dp.toPx(),
+            style = Stroke(width = 3.dp.toPx())
+        )
+        // 3. The small dot
+        drawCircle(
+            brush = brush,
+            radius = 1.5.dp.toPx(),
+            center = Offset(size.width * 0.8f, size.height * 0.2f)
+        )
+    }
 }
