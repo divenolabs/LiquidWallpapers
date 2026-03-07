@@ -1,0 +1,37 @@
+*.iml
+.gradle
+/local.properties
+/.idea/caches
+*.iml
+.gradle
+/local.properties
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+.DS_Store
+/build
+/app/build
+/captures
+.externalNativeBuild
+.cxx
+*.hprof
+*.pyc
+.idea/
+.kotlin/
+*.iml
+.gradle/
+local.properties
+
+# Sensitive files — DO NOT push to GitHub
+app/google-services.json
+google-services.json
+*.jks
+*.keystore
+keystore.properties
+# Compiled Android Binaries
+*.apk
+*.aab
+*.ap_
