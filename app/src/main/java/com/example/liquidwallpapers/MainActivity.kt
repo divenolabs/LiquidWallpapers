@@ -30,6 +30,12 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.CompositingStrategy
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.unit.dp
 import com.example.liquidwallpapers.ui.components.GlassBottomNavigationBar
 import androidx.navigation.navArgument
 import com.example.liquidwallpapers.data.model.Wallpaper
@@ -145,7 +151,11 @@ class MainActivity : ComponentActivity() {
             },
             containerColor = Color.Transparent
         ) { _ ->
-            NavHost(navController = navController, startDestination = "home") {
+            NavHost(
+                navController = navController, 
+                startDestination = "home",
+                modifier = Modifier.fillMaxSize()
+            ) {
                 composable("home") {
                     HomeScreen(
                         onWallpaperClick = { wallpaper ->

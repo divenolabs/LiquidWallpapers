@@ -36,8 +36,8 @@ android {
         targetSdk = 35
 
         // --- VERSION UPDATED FOR 1.4 ---
-        versionCode = 10
-        versionName = "2.1"
+        versionCode = 11
+        versionName = "2.2"
         // -------------------------------
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

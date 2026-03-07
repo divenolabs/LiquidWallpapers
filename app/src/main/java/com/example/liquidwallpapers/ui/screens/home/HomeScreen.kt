@@ -38,6 +38,9 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.CompositingStrategy
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
@@ -78,6 +81,8 @@ fun HomeScreen(
         }
     }
 
+    val navInsets = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+
     // --- ROOT CONTAINER ---
     Box(modifier = Modifier.fillMaxSize()) {
 
@@ -95,6 +100,21 @@ fun HomeScreen(
                 enter = fadeIn(tween(500)) + slideInVertically(tween(600)) { 100 }
             ) {
                 LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .graphicsLayer { compositingStrategy = CompositingStrategy.Offscreen }
+                        .drawWithContent {
+                            drawContent()
+                            val insetsPx = navInsets.toPx()
+                            drawRect(
+                                brush = Brush.verticalGradient(
+                                    colors = listOf(Color.Black, Color.Transparent),
+                                    startY = size.height - 200.dp.toPx() - insetsPx, // Starts fading higher up
+                                    endY = size.height - 80.dp.toPx() - insetsPx    // fully invisible right at top of navbar
+                                ),
+                                blendMode = BlendMode.DstIn
+                            )
+                        },
                     state = listState,
                     contentPadding = PaddingValues(bottom = 120.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
