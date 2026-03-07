@@ -39,7 +39,7 @@ class HomeViewModel @Inject constructor(
             try {
                 val curated = repository.getFoundersCollection()
                 _uiState.update { it.copy(foundersWallpapers = curated) }
-            } catch (e: Exception) { }
+            } catch (_: Exception) { }
         }
     }
 
@@ -49,10 +49,7 @@ class HomeViewModel @Inject constructor(
         currentPage = 1
 
         viewModelScope.launch {
-            // FIX: If query is blank, force "wallpapers" keyword instead of random photos
-            val effectiveQuery = if (query.isBlank()) "wallpapers" else query
-
-            // We now use searchPhotos for EVERYTHING to ensure strict filtering
+            val effectiveQuery = query.ifBlank { DEFAULT_QUERY }
             val newWallpapers = repository.searchPhotos(effectiveQuery, currentPage)
 
             _uiState.update {
@@ -71,11 +68,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
 
-            // FIX: Determine query. If blank, default to "wallpapers"
-            val currentQuery = _uiState.value.searchQuery
-            val effectiveQuery = if (currentQuery.isBlank()) "wallpapers" else currentQuery
-
-            // Always call searchPhotos to keep the feed clean
+            val effectiveQuery = _uiState.value.searchQuery.ifBlank { DEFAULT_QUERY }
             val newWallpapers = repository.searchPhotos(effectiveQuery, currentPage)
 
             _uiState.update {
@@ -86,5 +79,9 @@ class HomeViewModel @Inject constructor(
             }
             currentPage++
         }
+    }
+
+    companion object {
+        private const val DEFAULT_QUERY = "wallpaper"
     }
 }

@@ -17,9 +17,6 @@ if (localPropertiesFile.exists()) {
     keystoreProperties.load(FileInputStream(localPropertiesFile))
 }
 
-// 1. Get Unsplash Key
-val unsplashKey = keystoreProperties.getProperty("UNSPLASH_ACCESS_KEY") ?: ""
-
 // 2. Get Pexels Key (FIXED)
 val pexelsKey = keystoreProperties.getProperty("PEXELS_API_KEY") ?: ""
 // ------------------------------
@@ -39,8 +36,8 @@ android {
         targetSdk = 35
 
         // --- VERSION UPDATED FOR 1.4 ---
-        versionCode = 8
-        versionName = "1.7"
+        versionCode = 10
+        versionName = "2.1"
         // -------------------------------
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -49,7 +46,6 @@ android {
         }
 
         // --- INJECT KEYS INTO APP ---
-        buildConfigField("String", "UNSPLASH_ACCESS_KEY", "\"$unsplashKey\"")
         buildConfigField("String", "PEXELS_API_KEY", "\"$pexelsKey\"")
     }
 

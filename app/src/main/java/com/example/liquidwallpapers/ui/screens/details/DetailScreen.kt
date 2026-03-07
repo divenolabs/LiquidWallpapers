@@ -60,6 +60,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.core.net.toUri
 import androidx.core.graphics.drawable.toBitmap
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -79,7 +80,11 @@ import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 import kotlin.math.max
 import kotlin.math.roundToInt
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun DetailScreen(
     wallpaper: Wallpaper,
@@ -88,6 +93,10 @@ fun DetailScreen(
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
+    
+    val writePermissionState = rememberPermissionState(
+        android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+    )
 
     // --- CHECK FOR EDITED IMAGE RESULT ---
     val editedImageUri = navController.currentBackStackEntry
@@ -134,6 +143,7 @@ fun DetailScreen(
         val loader = ImageLoader(context)
         val request = ImageRequest.Builder(context)
             .data(imageUrlToLoad)
+            .size((screenWidth * 1.5).toInt(), (screenHeight * 1.5).toInt()) // Prevents OOM by targeting 1.5x screen res
             .allowHardware(false)
             .build()
         val result = loader.execute(request)
@@ -252,7 +262,7 @@ fun DetailScreen(
                             .size(50.dp)
                             .highContrastGlass(CircleShape)
                             .bounceClick {
-                                val encodedUrl = URLEncoder.encode(imageUrlToLoad.toString(), StandardCharsets.UTF_8.toString())
+                                val encodedUrl = URLEncoder.encode(imageUrlToLoad.toString(), StandardCharsets.UTF_8.name())
                                 navController.navigate("text_editor/$encodedUrl")
                             },
                         contentAlignment = Alignment.Center
@@ -294,12 +304,15 @@ fun DetailScreen(
                             .highContrastGlass(CircleShape)
                             .bounceClick {
                                 if (bitmap != null) {
-                                    viewModel.trackDownload(wallpaper)
-                                    scope.launch {
-                                        val finalBm = withContext(Dispatchers.Default) {
-                                            BitmapUtils.applyEffects(context, bitmap!!, blurValue, -dimValue)
+                                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q && !writePermissionState.status.isGranted) {
+                                        writePermissionState.launchPermissionRequest()
+                                    } else {
+                                        scope.launch {
+                                            val finalBm = withContext(Dispatchers.Default) {
+                                                BitmapUtils.applyEffects(context, bitmap!!, blurValue, -dimValue)
+                                            }
+                                            ImageHelper.saveImageToGallery(context, finalBm, wallpaper.title)
                                         }
-                                        ImageHelper.saveImageToGallery(context, finalBm, wallpaper.title)
                                     }
                                 }
                             },
@@ -376,7 +389,7 @@ fun DetailScreen(
                                     wallpaper.photographerUrl + "?utm_source=LiquidWallpapers&utm_medium=referral"
                                 }
                             }
-                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(urlToOpen))
+                            val intent = Intent(Intent.ACTION_VIEW, urlToOpen.toUri())
                             context.startActivity(intent)
                         }
                 )
@@ -495,7 +508,6 @@ fun DetailScreen(
                 onOptionSelected = { flag ->
                     showDialog = false
                     isProcessing = true
-                    viewModel.trackDownload(wallpaper)
                     scope.launch {
                         val processedBitmap = withContext(Dispatchers.Default) {
                             BitmapUtils.applyEffects(context, bitmap!!, blurValue, -dimValue)

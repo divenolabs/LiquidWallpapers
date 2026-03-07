@@ -5,7 +5,6 @@ import androidx.room.Room
 import com.example.liquidwallpapers.data.local.WallpaperDao
 import com.example.liquidwallpapers.data.local.WallpaperDatabase
 import com.example.liquidwallpapers.data.remote.PexelsApi
-import com.example.liquidwallpapers.data.remote.UnsplashApi
 import com.example.liquidwallpapers.data.repository.WallpaperRepository
 import dagger.Module
 import dagger.Provides
@@ -19,26 +18,8 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
+@Suppress("unused")
 object AppModule {
-
-    // --- Unsplash API ---
-    @Provides
-    @Singleton
-    fun provideUnsplashApi(): UnsplashApi {
-        val logging = HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BODY
-        }
-        val client = OkHttpClient.Builder()
-            .addInterceptor(logging)
-            .build()
-
-        return Retrofit.Builder()
-            .baseUrl("https://api.unsplash.com/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .client(client)
-            .build()
-            .create(UnsplashApi::class.java)
-    }
 
     // --- Pexels API ---
     @Provides
@@ -82,11 +63,10 @@ object AppModule {
     @Provides
     @Singleton
     fun provideRepository(
-        unsplashApi: UnsplashApi,
         pexelsApi: PexelsApi,      // <--- Added PexelsApi
         dao: WallpaperDao
     ): WallpaperRepository {
-        // FIX: Must match the order: Unsplash, Pexels, Dao
-        return WallpaperRepository(unsplashApi, pexelsApi, dao)
+        // FIX: Must match the order: Pexels, Dao
+        return WallpaperRepository(pexelsApi, dao)
     }
 }

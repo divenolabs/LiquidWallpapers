@@ -4,19 +4,20 @@ import android.graphics.Color.parseColor
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.*
+
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.ExperimentalFoundationApi
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -24,7 +25,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Favorite
-import androidx.compose.material.icons.rounded.Info
+
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material3.*
@@ -49,31 +50,33 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.example.liquidwallpapers.data.model.Wallpaper
 import com.example.liquidwallpapers.ui.components.glassEffect
-import com.example.liquidwallpapers.ui.screens.AboutDialog
+
 import com.example.liquidwallpapers.ui.theme.DeepBlue
 import com.example.liquidwallpapers.ui.theme.LiquidOrange
 
-// --- UPDATED CATEGORIES LIST ---
-val CATEGORIES = listOf(
-    "All", // Required to reset the filter
-    "Nature", "Minimal", "Dark Wallpapers", "Space", "Cities",
-    "Sci-Fi", "Mountains", "Automotives", "Flowers", "Animals", "Neon"
-)
 
-@OptIn(ExperimentalFoundationApi::class)
+
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
     onWallpaperClick: (Wallpaper) -> Unit,
-    onFavoritesClick: () -> Unit
+    onFavoritesClick: () -> Unit,
+    scrollToTopTrigger: Int = 0
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val focusManager = LocalFocusManager.current
+    val listState = rememberLazyListState()
 
     var isVisible by remember { mutableStateOf(false) }
-    var showAbout by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) { isVisible = true }
+
+    // Scroll to top when trigger changes (home tab re-tapped)
+    LaunchedEffect(scrollToTopTrigger) {
+        if (scrollToTopTrigger > 0) {
+            listState.animateScrollToItem(0)
+        }
+    }
 
     // --- ROOT CONTAINER ---
     Box(modifier = Modifier.fillMaxSize()) {
@@ -92,7 +95,8 @@ fun HomeScreen(
                 enter = fadeIn(tween(500)) + slideInVertically(tween(600)) { 100 }
             ) {
                 LazyColumn(
-                    contentPadding = PaddingValues(bottom = 16.dp),
+                    state = listState,
+                    contentPadding = PaddingValues(bottom = 120.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
 
@@ -127,13 +131,6 @@ fun HomeScreen(
                                 tint = LiquidOrange,
                                 onClick = onFavoritesClick
                             )
-
-                            // About
-                            GlassIconButton(
-                                icon = Icons.Rounded.Info,
-                                tint = Color.White.copy(alpha = 0.8f),
-                                onClick = { showAbout = true }
-                            )
                         }
                     }
 
@@ -157,22 +154,7 @@ fun HomeScreen(
                         }
                     }
 
-                    // Sticky Categories
-                    stickyHeader {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 12.dp)
-                        ) {
-                            CategoryRow(
-                                selectedCategory = uiState.searchQuery,
-                                onCategoryClick = { category ->
-                                    val query = if (category == "All") "" else category
-                                    viewModel.searchWallpapers(query)
-                                }
-                            )
-                        }
-                    }
+
 
                     // Wallpapers Grid
                     val chunkedWallpapers = uiState.wallpapers.chunked(2)
@@ -216,9 +198,6 @@ fun HomeScreen(
                 }
             }
 
-            if (showAbout) {
-                AboutDialog(onDismiss = { showAbout = false })
-            }
         }
     }
 }
@@ -226,10 +205,6 @@ fun HomeScreen(
 // --- ANIMATED BACKGROUND COMPONENT ---
 @Composable
 fun AnimatedBackground() {
-    val configuration = LocalConfiguration.current
-    val screenHeight = configuration.screenHeightDp.dp.value * 3 // Convert roughly to pixels
-    val screenWidth = configuration.screenWidthDp.dp.value * 3
-
     val infiniteTransition = rememberInfiniteTransition(label = "background")
 
     // Blob 1: Orange (Top Left)
@@ -411,63 +386,11 @@ fun FoundersRow(wallpapers: List<Wallpaper>, onClick: (Wallpaper) -> Unit) {
     }
 }
 
-@Composable
-fun CategoryRow(selectedCategory: String, onCategoryClick: (String) -> Unit) {
-    // 1. Create a state for the list scroll position
-    val listState = rememberLazyListState()
 
-    // 2. Watch for changes in 'selectedCategory'
-    LaunchedEffect(selectedCategory) {
-        // Find which index matches the selected category name
-        val index = if (selectedCategory.isBlank()) {
-            0 // "All" is index 0
-        } else {
-            CATEGORIES.indexOfFirst { it.equals(selectedCategory, ignoreCase = true) }
-        }
-
-        // If found, scroll to it!
-        if (index >= 0) {
-            listState.animateScrollToItem(index)
-        }
-    }
-
-    LazyRow(
-        state = listState, // 3. Attach the state here
-        contentPadding = PaddingValues(horizontal = 16.dp),
-        horizontalArrangement = Arrangement.spacedBy(10.dp),
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        items(CATEGORIES) { category ->
-            val isSelected = if (category == "All") selectedCategory.isBlank() else selectedCategory.equals(category, ignoreCase = true)
-            Box(
-                modifier = Modifier
-                    .clip(CircleShape)
-                    .bounceClick { onCategoryClick(category) }
-                    .then(
-                        if (isSelected) {
-                            Modifier.background(
-                                brush = Brush.linearGradient(colors = listOf(LiquidOrange, Color(0xFFB02A02)))
-                            )
-                        } else {
-                            Modifier.glassEffect(RoundedCornerShape(100))
-                        }
-                    )
-                    .padding(horizontal = 24.dp, vertical = 10.dp)
-            ) {
-                Text(
-                    text = category,
-                    color = Color.White,
-                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            }
-        }
-    }
-}
 
 @Composable
 fun WallpaperCard(wallpaper: Wallpaper, onClick: (Wallpaper) -> Unit) {
-    val glowColor = try { Color(parseColor(wallpaper.color)) } catch (e: Exception) { LiquidOrange }
+    val glowColor = try { Color(parseColor(wallpaper.color)) } catch (_: Exception) { LiquidOrange }
     Card(
         shape = RoundedCornerShape(20.dp),
         modifier = Modifier

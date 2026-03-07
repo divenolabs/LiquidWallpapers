@@ -182,7 +182,7 @@ fun AboutDialog(onDismiss: () -> Unit) {
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
-                    text = "Solving my own problems.",
+                    text = "Building the apps I wish existed.",
                     color = Color.Gray,
                     style = MaterialTheme.typography.labelSmall
                 )

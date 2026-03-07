@@ -6,7 +6,6 @@ import com.example.liquidwallpapers.data.local.WallpaperDao
 import com.example.liquidwallpapers.data.model.Wallpaper
 import com.example.liquidwallpapers.data.model.toWallpaper // Pexels Mapper
 import com.example.liquidwallpapers.data.remote.PexelsApi
-import com.example.liquidwallpapers.data.remote.UnsplashApi
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Dispatchers
@@ -16,7 +15,6 @@ import java.net.URL
 import javax.inject.Inject
 
 class WallpaperRepository @Inject constructor(
-    private val unsplashApi: UnsplashApi,
     private val pexelsApi: PexelsApi,
     private val dao: WallpaperDao
 ) {
@@ -54,10 +52,9 @@ class WallpaperRepository @Inject constructor(
         }
     }
 
-    // 2. Search Photos (Pexels First -> Unsplash Fallback)
+    // 2. Search Photos (Pexels Only)
     suspend fun searchPhotos(query: String, page: Int): List<Wallpaper> {
-        // A. Try Pexels
-        try {
+        return try {
             val pexelsResponse = pexelsApi.searchWallpapers(
                 apiKey = BuildConfig.PEXELS_API_KEY,
                 query = query,
@@ -65,69 +62,12 @@ class WallpaperRepository @Inject constructor(
                 perPage = 30
             )
 
-            val pexelsWallpapers = pexelsResponse.photos
+            pexelsResponse.photos
                 .filter { it.height >= 3000 }
                 .map { it.toWallpaper() }
-
-            if (pexelsWallpapers.isNotEmpty()) {
-                return pexelsWallpapers
-            }
         } catch (e: Exception) {
-            Log.e("Repo", "Pexels Search failed: ${e.message}. Trying Unsplash...")
-        }
-
-        // B. Fallback to Unsplash
-        return try {
-            unsplashApi.searchPhotos(query, page, 30, "portrait").results
-                .filter { it.height >= 3000 }
-                .map { it.toDomainModel() }
-        } catch (e: Exception) {
-            e.printStackTrace()
+            Log.e("Repo", "Pexels Search failed: ${e.message}")
             emptyList()
-        }
-    }
-
-    // 3. Get Editorial/Popular Photos (Pexels First -> Unsplash Fallback)
-    suspend fun getEditorialPhotos(page: Int): List<Wallpaper> {
-        // A. Try Pexels (Curated List)
-        try {
-            val pexelsResponse = pexelsApi.getCuratedWallpapers(
-                apiKey = BuildConfig.PEXELS_API_KEY,
-                page = page,
-                perPage = 30
-            )
-
-            val pexelsWallpapers = pexelsResponse.photos
-                .filter { it.height >= 3000 }
-                .map { it.toWallpaper() }
-
-            if (pexelsWallpapers.isNotEmpty()) {
-                return pexelsWallpapers
-            }
-        } catch (e: Exception) {
-            Log.e("Repo", "Pexels Curated failed: ${e.message}. Trying Unsplash...")
-        }
-
-        // B. Fallback to Unsplash
-        return try {
-            unsplashApi.getEditorialPhotos(page, 30)
-                .filter { it.height >= 3000 }
-                .map { it.toDomainModel() }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            emptyList()
-        }
-    }
-
-    // --- UNSPLASH TRACKING ---
-    suspend fun trackDownload(downloadLocation: String) {
-        // Only track if it's a valid Unsplash URL (GitHub links will be empty here)
-        if (downloadLocation.isNotBlank()) {
-            try {
-                unsplashApi.trackDownload(downloadLocation)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
         }
     }
 

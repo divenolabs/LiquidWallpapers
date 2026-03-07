@@ -10,9 +10,11 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -24,11 +26,21 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.compose.material3.Scaffold
+import androidx.compose.ui.Alignment
+import com.example.liquidwallpapers.ui.components.GlassBottomNavigationBar
 import androidx.navigation.navArgument
 import com.example.liquidwallpapers.data.model.Wallpaper
 import com.example.liquidwallpapers.ui.screens.TextEditorScreen
 import com.example.liquidwallpapers.ui.screens.details.DetailScreen
 import com.example.liquidwallpapers.ui.screens.favorites.FavoritesScreen
+import com.example.liquidwallpapers.ui.screens.CategoriesScreen
+import com.example.liquidwallpapers.ui.screens.CategoryDetailScreen
+import com.example.liquidwallpapers.ui.screens.DailyMixScreen
+import com.example.liquidwallpapers.ui.screens.studio.StudioScreen
+import com.example.liquidwallpapers.ui.screens.ProfileScreen
 import com.example.liquidwallpapers.ui.screens.home.HomeScreen
 import com.example.liquidwallpapers.ui.theme.LiquidWallpapersTheme
 import com.google.android.play.core.appupdate.AppUpdateManager
@@ -95,49 +107,121 @@ class MainActivity : ComponentActivity() {
     }
 
     // --- NAVIGATION GRAPH ---
+    @android.annotation.SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     @Composable
     fun LiquidNavigation() {
         val navController = rememberNavController()
         val gson = Gson()
+        
+        val navBackStackEntry by navController.currentBackStackEntryAsState()
+        val currentRoute = navBackStackEntry?.destination?.route ?: "home"
+        
+        val showBottomBar = currentRoute in listOf("home", "categories_tab", "daily_mix", "premium", "profile")
 
-        NavHost(navController = navController, startDestination = "home") {
-            composable("home") {
-                HomeScreen(
-                    onWallpaperClick = { wallpaper ->
-                        val json = Uri.encode(gson.toJson(wallpaper))
-                        navController.navigate("detail/$json")
-                    },
-                    onFavoritesClick = { navController.navigate("favorites") }
-                )
-            }
-            composable(
-                route = "detail/{wallpaperJson}",
-                arguments = listOf(navArgument("wallpaperJson") { type = NavType.StringType })
-            ) { backStackEntry ->
-                val json = backStackEntry.arguments?.getString("wallpaperJson")
-                val wallpaper = gson.fromJson(json, Wallpaper::class.java)
-                DetailScreen(wallpaper = wallpaper, navController = navController)
-            }
-            composable("favorites") {
-                FavoritesScreen(
-                    onNavigateToDetail = { wallpaper ->
-                        val json = Uri.encode(gson.toJson(wallpaper))
-                        navController.navigate("detail/$json")
-                    },
-                    onBack = { navController.popBackStack() }
-                )
-            }
-            composable(
-                route = "text_editor/{imageUrl}",
-                arguments = listOf(navArgument("imageUrl") { type = NavType.StringType })
-            ) { backStackEntry ->
-                val imageUrl = backStackEntry.arguments?.getString("imageUrl") ?: ""
-                TextEditorScreen(navController = navController, imageUrl = imageUrl)
+        // Scroll-to-top trigger: increments when home tab is re-tapped
+        var scrollToTopTrigger by remember { mutableIntStateOf(0) }
+
+        Scaffold(
+            bottomBar = {
+                if (showBottomBar) {
+                    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.BottomCenter) {
+                        GlassBottomNavigationBar(
+                            currentRoute = currentRoute,
+                            onNavigate = { route ->
+                                navController.navigate(route) {
+                                    popUpTo(navController.graph.findStartDestination().id) { saveState = true }
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
+                            },
+                            onReselect = { route ->
+                                if (route == "home") {
+                                    scrollToTopTrigger++
+                                }
+                            }
+                        )
+                    }
+                }
+            },
+            containerColor = Color.Transparent
+        ) { _ ->
+            NavHost(navController = navController, startDestination = "home") {
+                composable("home") {
+                    HomeScreen(
+                        onWallpaperClick = { wallpaper ->
+                            val json = Uri.encode(gson.toJson(wallpaper))
+                            navController.navigate("detail/$json")
+                        },
+                        onFavoritesClick = { navController.navigate("favorites") },
+                        scrollToTopTrigger = scrollToTopTrigger
+                    )
+                }
+                composable("categories_tab") {
+                    CategoriesScreen(
+                        onCategoryClick = { categoryName ->
+                            navController.navigate("category_detail/$categoryName")
+                        }
+                    )
+                }
+                composable("daily_mix") {
+                    DailyMixScreen(
+                        onWallpaperClick = { wallpaper ->
+                            val json = Uri.encode(gson.toJson(wallpaper))
+                            navController.navigate("detail/$json")
+                        }
+                    )
+                }
+                composable("premium") { StudioScreen() }
+                composable("profile") {
+                    ProfileScreen(
+                        onFavoritesClick = { navController.navigate("favorites") }
+                    )
+                }
+                
+                composable(
+                    route = "detail/{wallpaperJson}",
+                    arguments = listOf(navArgument("wallpaperJson") { type = NavType.StringType })
+                ) { backStackEntry ->
+                    val json = backStackEntry.arguments?.getString("wallpaperJson")
+                    val wallpaper = gson.fromJson(json, Wallpaper::class.java)
+                    DetailScreen(wallpaper = wallpaper, navController = navController)
+                }
+                composable("favorites") {
+                    FavoritesScreen(
+                        onNavigateToDetail = { wallpaper ->
+                            val json = Uri.encode(gson.toJson(wallpaper))
+                            navController.navigate("detail/$json")
+                        },
+                        onBack = { navController.popBackStack() }
+                    )
+                }
+                composable(
+                    route = "category_detail/{categoryName}",
+                    arguments = listOf(navArgument("categoryName") { type = NavType.StringType })
+                ) { backStackEntry ->
+                    val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
+                    CategoryDetailScreen(
+                        categoryName = categoryName,
+                        onWallpaperClick = { wallpaper ->
+                            val json = Uri.encode(gson.toJson(wallpaper))
+                            navController.navigate("detail/$json")
+                        },
+                        onBack = { navController.popBackStack() }
+                    )
+                }
+                composable(
+                    route = "text_editor/{imageUrl}",
+                    arguments = listOf(navArgument("imageUrl") { type = NavType.StringType })
+                ) { backStackEntry ->
+                    val imageUrl = backStackEntry.arguments?.getString("imageUrl") ?: ""
+                    TextEditorScreen(navController = navController, imageUrl = imageUrl)
+                }
             }
         }
     }
 
     // --- UPDATE LOGIC ---
+    @Suppress("DEPRECATION")
     private fun checkForUpdates() {
         val appUpdateInfoTask = appUpdateManager.appUpdateInfo
         appUpdateInfoTask.addOnSuccessListener { appUpdateInfo ->
@@ -153,6 +237,8 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    @Suppress("DEPRECATION")
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == UPDATE_REQUEST_CODE && resultCode != RESULT_OK) {
@@ -161,6 +247,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    @Suppress("DEPRECATION")
     override fun onResume() {
         super.onResume()
         appUpdateManager.appUpdateInfo.addOnSuccessListener { appUpdateInfo ->
