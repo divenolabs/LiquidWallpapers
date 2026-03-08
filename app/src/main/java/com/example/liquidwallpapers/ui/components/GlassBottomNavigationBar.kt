@@ -1,6 +1,9 @@
 package com.example.liquidwallpapers.ui.components
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
@@ -17,10 +20,13 @@ import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -47,20 +53,39 @@ fun GlassBottomNavigationBar(
     onNavigate: (String) -> Unit,
     onReselect: (String) -> Unit = {}
 ) {
+    // Breathing effect for the alive navbar
+    val infiniteTransition = rememberInfiniteTransition(label = "navbar_pulse")
+    val pulseAlpha by infiniteTransition.animateFloat(
+        initialValue = 0.2f, targetValue = 0.7f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(2500, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        ), label = "pulse"
+    )
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 24.dp)
             .padding(bottom = 16.dp + WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding())
             .height(64.dp)
-            .background(Color(0x80000000), RoundedCornerShape(50))
             .glassEffect(RoundedCornerShape(50))
+            .background(Color(0x80000000), RoundedCornerShape(50))
+            .border(
+                width = 1.dp,
+                brush = Brush.verticalGradient(
+                    colors = listOf(
+                        LiquidOrange.copy(alpha = pulseAlpha),
+                        Color.White.copy(alpha = 0.05f)
+                    )
+                ),
+                shape = RoundedCornerShape(50)
+            )
             .padding(horizontal = 16.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
         bottomNavItems.forEach { item ->
-            // If we are on detail or text editor screen we probably don't want this bar shown at all.
             val isSelected = currentRoute == item.route
             
             BottomNavItemView(
@@ -83,20 +108,31 @@ fun BottomNavItemView(
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     
-    val iconColor = if (isSelected) Color.Black else Color.White.copy(alpha = 0.5f)
+    // Smooth transitions for selection state
+    val isSelectedAnim by animateFloatAsState(
+        targetValue = if (isSelected) 1f else 0f, 
+        animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessLow),
+        label = "selected"
+    )
+    val iconColor by animateColorAsState(
+        targetValue = if (isSelected) Color.Black else Color.White.copy(alpha = 0.5f), 
+        animationSpec = tween(300),
+        label = "iconCol"
+    )
     
-    // Increased interactive area to 48.dp for better touch targets and perfect centering
     val containerModifier = Modifier
         .size(48.dp)
+        .graphicsLayer {
+            // Adds a subtle breathing pop when selected
+            scaleX = 0.8f + (0.2f * isSelectedAnim)
+            scaleY = 0.8f + (0.2f * isSelectedAnim)
+        }
         .clickable(
             interactionSource = interactionSource,
             indication = null,
             onClick = onClick
         )
-        .then(
-            if (isSelected) Modifier.background(LiquidOrange, CircleShape)
-            else Modifier
-        )
+        .background(LiquidOrange.copy(alpha = isSelectedAnim.coerceIn(0f, 1f)), CircleShape)
 
     Box(
         modifier = containerModifier,
@@ -104,9 +140,9 @@ fun BottomNavItemView(
     ) {
         Icon(
             imageVector = item.icon,
-            contentDescription = null, // UI implies meaning, no visible title
+            contentDescription = null, 
             tint = iconColor,
-            modifier = Modifier.size(26.dp) // Slightly boosted icon size
+            modifier = Modifier.size(26.dp)
         )
     }
 }

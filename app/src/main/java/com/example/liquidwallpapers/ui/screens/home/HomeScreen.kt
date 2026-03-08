@@ -159,9 +159,9 @@ fun HomeScreen(
                         item {
                             Column {
                                 Text(
-                                    text = "Founder's Choice",
+                                    text = "Diveno Favorites",
                                     style = MaterialTheme.typography.titleMedium,
-                                    color = LiquidOrange,
+                                    color = Color.White,
                                     fontWeight = FontWeight.Bold,
                                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
                                 )

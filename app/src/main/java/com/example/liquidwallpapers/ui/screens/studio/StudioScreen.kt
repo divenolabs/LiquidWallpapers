@@ -126,7 +126,7 @@ object WallpaperGenerator {
             val r = (c.red * ct + shift).coerceIn(0f, 1f)
             val g = (c.green * ct + shift).coerceIn(0f, 1f)
             val b = (c.blue * ct + shift).coerceIn(0f, 1f)
-            return android.graphics.Color.argb((baseA * 255).toInt(), (r * 255).toInt(), (g * 255).toInt(), (b * 255).toInt())
+            return android.graphics.Color.argb((baseA * 255).toInt().coerceIn(0, 255), (r * 255).toInt(), (g * 255).toInt(), (b * 255).toInt())
         }
 
         canvas.drawColor(adjustColor(Color(0xFF050510), 1f))
@@ -292,7 +292,7 @@ fun StaticLiquidCanvas(preset: VibePreset, blurAmount: Float, dimIntensity: Floa
         g = (g * ct + shift * 255f).coerceIn(0f, 255f) / 255f
         b = (b * ct + shift * 255f).coerceIn(0f, 255f) / 255f
 
-        return Color(r, g, b, baseAmount)
+        return Color(r, g, b, baseAmount.coerceIn(0f, 1f))
     }
 
     Box(
@@ -535,7 +535,7 @@ fun StudioSlider(
     Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         Icon(icon, null, tint = Color.White.copy(alpha = 0.6f), modifier = Modifier.size(16.dp))
         Spacer(modifier = Modifier.width(8.dp))
-        Text(label, color = Color.White.copy(alpha = 0.7f), fontSize = 12.sp, fontWeight = FontWeight.Medium, modifier = Modifier.width(50.dp))
+        Text(label, color = Color.White.copy(alpha = 0.7f), fontSize = 12.sp, fontWeight = FontWeight.Medium, modifier = Modifier.width(60.dp))
         Slider(
             value = value,
             onValueChange = onValueChange,

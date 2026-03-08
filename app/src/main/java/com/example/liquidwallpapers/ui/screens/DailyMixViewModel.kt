@@ -54,7 +54,7 @@ class DailyMixViewModel @Inject constructor(
 
             // Fetch wallpapers using day-based page for daily variety
             val wallpapers = repository.searchPhotos(
-                "wallpaper",
+                "mobile wallpapers",
                 page = dayPage
             )
 
