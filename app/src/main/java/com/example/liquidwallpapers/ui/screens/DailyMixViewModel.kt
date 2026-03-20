@@ -47,16 +47,22 @@ class DailyMixViewModel @Inject constructor(
         }
 
         // Use day-of-year as page number so each day gives different results
-        val dayPage = LocalDate.now().dayOfYear
+        // Limited to 10 to avoid Pexels pagination limit out of bounds error
+        val dayPage = (LocalDate.now().dayOfYear % 10) + 1
 
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
 
             // Fetch wallpapers using day-based page for daily variety
-            val wallpapers = repository.searchPhotos(
+            var wallpapers = repository.searchPhotos(
                 "mobile wallpapers",
                 page = dayPage
             )
+
+            // Fallback: If Pexels pagination limit is reached or page returns empty, reset to page 1
+            if (wallpapers.isEmpty() && dayPage > 1) {
+                wallpapers = repository.searchPhotos("mobile wallpapers", page = 1)
+            }
 
             // Filter out any previously seen IDs from this session
             val seenIds = prefs.getStringSet("seen_ids_$todayKey", emptySet()) ?: emptySet()

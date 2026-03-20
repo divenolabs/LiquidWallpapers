@@ -34,7 +34,8 @@ class HomeViewModel @Inject constructor(
         // Shift the starting page based on the day of the year 
         // This gives users entirely completely new mixed wallpapers every single day
         val dayOfYear = java.util.Calendar.getInstance().get(java.util.Calendar.DAY_OF_YEAR)
-        defaultStartPage = (dayOfYear % 100) + 1 
+        // Reduced max random days to 10 to avoid Pexels pagination depths returning empty items
+        defaultStartPage = (dayOfYear % 10) + 1 
         currentPage = defaultStartPage
 
         loadFoundersCollection()
@@ -60,6 +61,12 @@ class HomeViewModel @Inject constructor(
             val effectiveQuery = query.ifBlank { DEFAULT_QUERY }
             var newWallpapers = repository.searchPhotos(effectiveQuery, currentPage)
             
+            // Fallback: If Pexels pagination limit is reached or page returns empty, reset to page 1
+            if (newWallpapers.isEmpty() && currentPage > 1) {
+                currentPage = 1
+                newWallpapers = repository.searchPhotos(effectiveQuery, currentPage)
+            }
+
             // Randomly shuffle the mixed feed so it feels very random and un-sorted
             if (query.isBlank()) {
                 newWallpapers = newWallpapers.shuffled()
@@ -84,6 +91,12 @@ class HomeViewModel @Inject constructor(
             val effectiveQuery = _uiState.value.searchQuery.ifBlank { DEFAULT_QUERY }
             var newWallpapers = repository.searchPhotos(effectiveQuery, currentPage)
             
+            // Fallback: If Pexels pagination limit is reached or page returns empty, reset to page 1
+            if (newWallpapers.isEmpty() && currentPage > 1) {
+                currentPage = 1
+                newWallpapers = repository.searchPhotos(effectiveQuery, currentPage)
+            }
+
             // Randomly shuffle the mixed feed 
             if (_uiState.value.searchQuery.isBlank()) {
                 newWallpapers = newWallpapers.shuffled()
