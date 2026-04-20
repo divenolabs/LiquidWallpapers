@@ -203,8 +203,8 @@ fun DetailScreen(
                             val maxX = 0f
                             val minY = screenHeight - currentHeight
                             val maxY = 0f
-                            val newX = (offsetX + pan.x).coerceIn(minX, maxX)
-                            val newY = (offsetY + pan.y).coerceIn(minY, maxY)
+                            val newX = (offsetX + pan.x).coerceIn(minX, maxOf(minX, maxX))
+                            val newY = (offsetY + pan.y).coerceIn(minY, maxOf(minY, maxY))
                             scale = newScale
                             offsetX = newX
                             offsetY = newY

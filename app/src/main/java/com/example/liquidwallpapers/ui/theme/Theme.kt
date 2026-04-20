@@ -30,8 +30,6 @@ fun LiquidWallpapersTheme(
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            // Make the status bar (battery/time area) transparent
-            window.statusBarColor = Color.Transparent.toArgb()
             // Ensure icons are white
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = false
         }

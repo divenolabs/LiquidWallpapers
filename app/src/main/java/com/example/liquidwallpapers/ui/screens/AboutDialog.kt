@@ -50,8 +50,8 @@ fun AboutDialog(onDismiss: () -> Unit) {
                 .background(
                     brush = Brush.verticalGradient(
                         colors = listOf(
-                            Color.Black.copy(alpha = 0.6f),
-                            Color.Black.copy(alpha = 0.85f)
+                            Color.Black.copy(alpha = 0.9f),
+                            Color.Black.copy(alpha = 0.95f)
                         )
                     )
                 )
@@ -91,7 +91,7 @@ fun AboutDialog(onDismiss: () -> Unit) {
                     )
                 )
 
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
                 // --- ABOUT ---
                 SectionHeader("About Liquid Wallpapers")
@@ -102,7 +102,7 @@ fun AboutDialog(onDismiss: () -> Unit) {
                     textAlign = TextAlign.Center
                 )
 
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(12.dp))
 
                 // --- PROJECTS ---
                 SectionHeader("Our Projects")
@@ -113,7 +113,32 @@ fun AboutDialog(onDismiss: () -> Unit) {
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
 
-                // Project 1: THE NAVRA (Hyperlink)
+                // Project 1: Listro
+                val listroText = buildAnnotatedString {
+                    append("• ")
+                    pushStringAnnotation(tag = "URL", annotation = "https://forms.gle/gSp2Dqee5kEB86PH9")
+                    withStyle(style = SpanStyle(color = LiquidOrange, fontWeight = FontWeight.Bold, textDecoration = TextDecoration.Underline)) {
+                        append("Listro")
+                    }
+                    pop()
+                    append(" - A sentient to-do app")
+                }
+
+                ClickableText(
+                    text = listroText,
+                    style = MaterialTheme.typography.bodyMedium.copy(color = Color.White.copy(alpha = 0.9f)),
+                    onClick = { offset ->
+                        listroText.getStringAnnotations(tag = "URL", start = offset, end = offset)
+                            .firstOrNull()?.let { annotation ->
+                                uriHandler.openUri(annotation.item)
+                            }
+                    }
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Ad: The Navra
+                SectionHeader("Ad:")
                 val navraText = buildAnnotatedString {
                     append("• ")
                     pushStringAnnotation(tag = "URL", annotation = "https://www.thenavra.com")
@@ -135,16 +160,7 @@ fun AboutDialog(onDismiss: () -> Unit) {
                     }
                 )
 
-                Spacer(modifier = Modifier.height(8.dp))
-
-                // Project 2: ZeroCoBuild
-                Text(
-                    text = "• ZeroCoBuild: AI-Powered Virtual Photo shoot for brands and Wholesalers.",
-                    color = Color.White.copy(alpha = 0.9f),
-                    style = MaterialTheme.typography.bodyMedium
-                )
-
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
                 // --- THE FUTURE ---
                 SectionHeader("The Future")
@@ -155,11 +171,11 @@ fun AboutDialog(onDismiss: () -> Unit) {
                     textAlign = TextAlign.Center
                 )
 
-                Spacer(modifier = Modifier.height(40.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
                 // --- FOOTER ---
                 HorizontalDivider(color = Color.White.copy(alpha = 0.1f))
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
                 // --- SOCIALS (Instagram) ---
                 Text(
@@ -179,7 +195,7 @@ fun AboutDialog(onDismiss: () -> Unit) {
                     InstagramLogo()
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
                     text = "Building the apps I wish existed.",
