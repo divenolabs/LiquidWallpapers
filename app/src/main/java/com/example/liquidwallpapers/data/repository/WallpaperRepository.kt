@@ -43,7 +43,7 @@ class WallpaperRepository @Inject constructor(
                         title = item["title"] ?: "Founder's Choice",
                         downloadLocation = "" // No tracking for GitHub
                     )
-                }
+                }.filter { WallpaperContentFilter.isAllowed(it) }
             } catch (e: Exception) {
                 Log.e("Repo", "GitHub Load Failed: ${e.message}")
                 e.printStackTrace()
@@ -55,14 +55,16 @@ class WallpaperRepository @Inject constructor(
     // 2. Search Photos (Pexels Only)
     suspend fun searchPhotos(query: String, page: Int): List<Wallpaper> {
         return try {
+            val safeQuery = WallpaperContentFilter.safeSearchQuery(query)
             val pexelsResponse = pexelsApi.searchWallpapers(
                 apiKey = BuildConfig.PEXELS_API_KEY,
-                query = query,
+                query = safeQuery,
                 page = page,
                 perPage = 30
             )
 
             pexelsResponse.photos
+                .filter { WallpaperContentFilter.isAllowed(it) }
                 .filter { it.height >= 3000 }
                 .map { it.toWallpaper() }
         } catch (e: Exception) {

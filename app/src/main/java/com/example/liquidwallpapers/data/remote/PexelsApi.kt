@@ -21,6 +21,8 @@ interface PexelsApi {
         @Header("Authorization") apiKey: String,
         @Query("query") query: String,
         @Query("per_page") perPage: Int = 30,
-        @Query("page") page: Int = 1
+        @Query("page") page: Int = 1,
+        @Query("orientation") orientation: String = "portrait",
+        @Query("size") size: String = "large"
     ): PexelsResponse
 }

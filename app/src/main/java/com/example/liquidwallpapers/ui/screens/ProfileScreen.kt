@@ -11,7 +11,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
@@ -20,6 +22,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ArrowForward
 import androidx.compose.material.icons.rounded.CleaningServices
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.Favorite
@@ -44,15 +47,24 @@ import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.imageLoader
 import com.example.liquidwallpapers.ui.components.glassEffect
 import com.example.liquidwallpapers.ui.screens.home.AnimatedBackground
 import com.example.liquidwallpapers.ui.theme.LiquidOrange
+import kotlinx.coroutines.launch
+
+private const val LIQUID_WALLPAPERS_PAGE_URL = "https://www.divenolabs.in/apps/liquid-wallpapers"
+private const val LIQUID_WALLPAPERS_PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.divenolabs.liquidwall"
+private const val LIQUID_WALLPAPERS_PRIVACY_URL = "https://www.divenolabs.in/liquid-wallpapers-privacy-policy.html"
+private const val LIQUID_WALLPAPERS_TERMS_URL = "https://www.divenolabs.in/liquid-wallpapers-terms.html"
+private const val LIQUID_WALLPAPERS_CHANGELOG_URL = "https://www.divenolabs.in/apps/liquid-wallpapers/changelog"
 
 // ─────────────────────────────────────
 // AVATAR DATA
@@ -92,8 +104,14 @@ val defaultAvatars = listOf(
 // ─────────────────────────────────────
 
 @Composable
-fun ProfileScreen(onFavoritesClick: () -> Unit = {}) {
+fun ProfileScreen(
+    onFavoritesClick: () -> Unit = {},
+    viewModel: ProfileViewModel = hiltViewModel()
+) {
     val context = LocalContext.current
+    val uriHandler = LocalUriHandler.current
+    val stats by viewModel.uiState.collectAsState()
+    val coroutineScope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
     var showAbout by remember { mutableStateOf(false) }
     var showAvatarPicker by remember { mutableStateOf(false) }
@@ -104,7 +122,10 @@ fun ProfileScreen(onFavoritesClick: () -> Unit = {}) {
 
     // Entrance animation
     var isVisible by remember { mutableStateOf(false) }
-    LaunchedEffect(Unit) { isVisible = true }
+    LaunchedEffect(Unit) {
+        isVisible = true
+        viewModel.refreshCacheSize()
+    }
 
     val navInsets = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
 
@@ -129,9 +150,9 @@ fun ProfileScreen(onFavoritesClick: () -> Unit = {}) {
                 }
                 .verticalScroll(scrollState)
                 .statusBarsPadding()
-                .padding(horizontal = 20.dp)
+                .padding(horizontal = 12.dp)
         ) {
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(18.dp))
 
             // Header
             AnimatedVisibility(
@@ -139,12 +160,13 @@ fun ProfileScreen(onFavoritesClick: () -> Unit = {}) {
                 enter = fadeIn(tween(500)) + slideInVertically(tween(500)) { -40 }
             ) {
                 Column {
-                    Text("Profile", color = Color.White, fontSize = 28.sp, fontWeight = FontWeight.Bold)
-                    Text("Settings & preferences", color = Color.White.copy(alpha = 0.5f), fontSize = 13.sp)
+                    Text("Profile", color = Color.White, fontSize = 30.sp, fontWeight = FontWeight.ExtraBold)
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text("Your Liquid Wallpapers space", color = Color.White.copy(alpha = 0.56f), fontSize = 14.sp)
                 }
             }
 
-            Spacer(modifier = Modifier.height(28.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
             // ── ANIMATED AVATAR CARD ──
             AnimatedVisibility(
@@ -153,11 +175,12 @@ fun ProfileScreen(onFavoritesClick: () -> Unit = {}) {
             ) {
                 AnimatedProfileCard(
                     avatar = defaultAvatars[selectedAvatarIndex],
+                    stats = stats,
                     onAvatarClick = { showAvatarPicker = true }
                 )
             }
 
-            Spacer(modifier = Modifier.height(28.dp))
+            Spacer(modifier = Modifier.height(22.dp))
 
             // Section: Actions
             AnimatedVisibility(
@@ -165,24 +188,23 @@ fun ProfileScreen(onFavoritesClick: () -> Unit = {}) {
                 enter = fadeIn(tween(400, delayMillis = 300)) + slideInVertically(tween(400, delayMillis = 300)) { 60 }
             ) {
                 Column {
-                    Text(
-                        "ACTIONS", color = Color.White.copy(alpha = 0.4f), fontSize = 11.sp,
-                        fontWeight = FontWeight.Bold, letterSpacing = 1.5.sp,
-                        modifier = Modifier.padding(start = 4.dp, bottom = 10.dp)
-                    )
+                    ProfileSectionLabel("Library")
 
                     // 1. Favorites
                     ProfileOption(Icons.Rounded.Favorite, "My Favorites", "View your saved wallpapers", LiquidOrange) {
                         onFavoritesClick()
                     }
-                    Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(modifier = Modifier.height(18.dp))
+
+                    ProfileSectionLabel("App Tools")
 
                     // 2. Clear Image Cache
                     ProfileOption(Icons.Rounded.CleaningServices, "Clear Image Cache", "Free up storage by clearing cached wallpapers", Color(0xFFFF6B35)) {
                         try {
                             context.imageLoader.memoryCache?.clear()
                             context.imageLoader.diskCache?.clear()
-                            Toast.makeText(context, "Image cache cleared ✓", Toast.LENGTH_SHORT).show()
+                            coroutineScope.launch { viewModel.refreshCacheSize() }
+                            Toast.makeText(context, "Image cache cleared", Toast.LENGTH_SHORT).show()
                         } catch (e: Exception) {
                             Toast.makeText(context, "Failed to clear cache", Toast.LENGTH_SHORT).show()
                         }
@@ -194,7 +216,7 @@ fun ProfileScreen(onFavoritesClick: () -> Unit = {}) {
                         val shareIntent = Intent(Intent.ACTION_SEND).apply {
                             type = "text/plain"
                             putExtra(Intent.EXTRA_SUBJECT, "Liquid Wallpapers")
-                            putExtra(Intent.EXTRA_TEXT, "Check out Liquid Wallpapers — stunning 4K wallpapers with a glassmorphic design! 🎨✨")
+                            putExtra(Intent.EXTRA_TEXT, "Check out Liquid Wallpapers - curated high quality wallpapers with a glassmorphic design.")
                         }
                         context.startActivity(Intent.createChooser(shareIntent, "Share via"))
                     }
@@ -205,12 +227,41 @@ fun ProfileScreen(onFavoritesClick: () -> Unit = {}) {
                         val dmPrefs = context.getSharedPreferences("daily_mix", android.content.Context.MODE_PRIVATE)
                         val todayKey = java.time.LocalDate.now().format(java.time.format.DateTimeFormatter.ISO_LOCAL_DATE)
                         dmPrefs.edit().remove("finished_date").remove("seen_ids_$todayKey").commit()
-                        Toast.makeText(context, "Daily Mix reset! Go swipe again ✓", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Daily Mix reset. Go swipe again", Toast.LENGTH_SHORT).show()
+                    }
+                    Spacer(modifier = Modifier.height(18.dp))
+
+                    ProfileSectionLabel("Major Links")
+
+                    ProfileOption(Icons.Rounded.Info, "Product Page", "Liquid Wallpapers on Diveno Labs", Color(0xFF7BD88F)) {
+                        uriHandler.openUri(LIQUID_WALLPAPERS_PAGE_URL)
                     }
                     Spacer(modifier = Modifier.height(12.dp))
 
+                    ProfileOption(Icons.Rounded.Share, "Play Store", "Download or share the app listing", LiquidOrange) {
+                        uriHandler.openUri(LIQUID_WALLPAPERS_PLAY_STORE_URL)
+                    }
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    ProfileOption(Icons.Rounded.Info, "Privacy Policy", "How Liquid Wallpapers handles data", Color(0xFF78A8FF)) {
+                        uriHandler.openUri(LIQUID_WALLPAPERS_PRIVACY_URL)
+                    }
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    ProfileOption(Icons.Rounded.Info, "Terms of Service", "Legal terms for Liquid Wallpapers", Color(0xFF9B5DE5)) {
+                        uriHandler.openUri(LIQUID_WALLPAPERS_TERMS_URL)
+                    }
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    ProfileOption(Icons.Rounded.Refresh, "What's New", "View the latest Liquid Wallpapers updates", Color(0xFF00F5D4)) {
+                        uriHandler.openUri(LIQUID_WALLPAPERS_CHANGELOG_URL)
+                    }
+                    Spacer(modifier = Modifier.height(18.dp))
+
+                    ProfileSectionLabel("Studio")
+
                     // 5. About
-                    ProfileOption(Icons.Rounded.Info, "About", "Liquid Wallpapers • Product of Diveno Labs", Color(0xFF9B5DE5)) {
+                    ProfileOption(Icons.Rounded.Info, "About Liquid Wallpapers", "Product of Diveno Labs", Color(0xFF9B5DE5)) {
                         showAbout = true
                     }
 
@@ -241,8 +292,13 @@ fun ProfileScreen(onFavoritesClick: () -> Unit = {}) {
 // ANIMATED PROFILE CARD
 // ─────────────────────────────────────
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun AnimatedProfileCard(avatar: DefaultAvatar, onAvatarClick: () -> Unit) {
+fun AnimatedProfileCard(
+    avatar: DefaultAvatar,
+    stats: ProfileStatsUiState,
+    onAvatarClick: () -> Unit
+) {
     // Rotating gradient ring
     val infiniteTransition = rememberInfiniteTransition(label = "profile_ring")
     val ringRotation by infiniteTransition.animateFloat(
@@ -265,17 +321,23 @@ fun AnimatedProfileCard(avatar: DefaultAvatar, onAvatarClick: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(28.dp))
+            .clip(RoundedCornerShape(8.dp))
             .background(
-                Brush.verticalGradient(
-                    listOf(Color.White.copy(alpha = 0.06f), Color.White.copy(alpha = 0.02f))
+                Brush.linearGradient(
+                    listOf(
+                        Color.White.copy(alpha = 0.1f),
+                        Color.White.copy(alpha = 0.045f),
+                        Color.Black.copy(alpha = 0.16f)
+                    )
                 )
             )
-            .border(1.dp, Color.White.copy(alpha = 0.08f), RoundedCornerShape(28.dp))
-            .padding(vertical = 32.dp),
-        contentAlignment = Alignment.Center
+            .border(1.dp, Color.White.copy(alpha = 0.12f), RoundedCornerShape(8.dp))
+            .padding(14.dp)
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(14.dp)
+        ) {
             // Avatar with rotating ring
             Box(
                 contentAlignment = Alignment.Center,
@@ -289,7 +351,7 @@ fun AnimatedProfileCard(avatar: DefaultAvatar, onAvatarClick: () -> Unit) {
                 // Glow behind avatar
                 Box(
                     modifier = Modifier
-                        .size(110.dp)
+                        .size(96.dp)
                         .drawBehind {
                             drawCircle(
                                 brush = Brush.radialGradient(
@@ -303,7 +365,7 @@ fun AnimatedProfileCard(avatar: DefaultAvatar, onAvatarClick: () -> Unit) {
                 // Rotating gradient ring
                 Box(
                     modifier = Modifier
-                        .size(100.dp)
+                        .size(88.dp)
                         .rotate(ringRotation)
                         .drawBehind {
                             drawCircle(
@@ -316,14 +378,14 @@ fun AnimatedProfileCard(avatar: DefaultAvatar, onAvatarClick: () -> Unit) {
                 // Avatar circle
                 Box(
                     modifier = Modifier
-                        .size(86.dp)
+                        .size(74.dp)
                         .clip(CircleShape)
                         .background(Color(0xFF1A1A2E)),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
                         text = avatar.emoji,
-                        fontSize = 40.sp,
+                        fontSize = 34.sp,
                         textAlign = TextAlign.Center
                     )
                 }
@@ -333,7 +395,7 @@ fun AnimatedProfileCard(avatar: DefaultAvatar, onAvatarClick: () -> Unit) {
                     modifier = Modifier
                         .align(Alignment.BottomEnd)
                         .offset(x = (-2).dp, y = (-2).dp)
-                        .size(28.dp)
+                        .size(26.dp)
                         .clip(CircleShape)
                         .background(LiquidOrange)
                         .border(2.dp, Color(0xFF1A1A2E), CircleShape),
@@ -343,17 +405,30 @@ fun AnimatedProfileCard(avatar: DefaultAvatar, onAvatarClick: () -> Unit) {
                 }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Text(
-                "Wallpaper Enthusiast",
-                color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                "Tap avatar to customize",
-                color = Color.White.copy(alpha = 0.4f), fontSize = 12.sp
-            )
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    "Wallpaper Enthusiast",
+                    color = Color.White,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.ExtraBold
+                )
+                Spacer(modifier = Modifier.height(6.dp))
+                Text(
+                    "Curate, save, and tune your daily wallpaper flow.",
+                    color = Color.White.copy(alpha = 0.62f),
+                    fontSize = 13.sp,
+                    lineHeight = 18.sp
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+                FlowRow(
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    verticalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    ProfilePill("${stats.savedCount} saved")
+                    ProfilePill(if (stats.isDailyMixReady) "Ready" else "Done")
+                    ProfilePill("${stats.cacheLabel} cache")
+                }
+            }
         }
     }
 }
@@ -448,18 +523,20 @@ fun ProfileOption(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .glassEffect(RoundedCornerShape(20.dp))
+            .clip(RoundedCornerShape(8.dp))
+            .background(Color.White.copy(alpha = 0.075f))
+            .border(1.dp, Color.White.copy(alpha = 0.11f), RoundedCornerShape(8.dp))
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null
             ) { onClick() }
-            .padding(16.dp),
+            .padding(14.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
             modifier = Modifier
                 .size(44.dp)
-                .clip(RoundedCornerShape(14.dp))
+                .clip(RoundedCornerShape(8.dp))
                 .background(accentColor.copy(alpha = 0.15f)),
             contentAlignment = Alignment.Center
         ) {
@@ -470,5 +547,41 @@ fun ProfileOption(
             Text(title, color = Color.White, fontSize = 15.sp, fontWeight = FontWeight.SemiBold)
             Text(subtitle, color = Color.White.copy(alpha = 0.4f), fontSize = 12.sp)
         }
+        Icon(
+            imageVector = Icons.AutoMirrored.Rounded.ArrowForward,
+            contentDescription = null,
+            tint = Color.White.copy(alpha = 0.38f),
+            modifier = Modifier.size(18.dp)
+        )
+    }
+}
+
+@Composable
+fun ProfileSectionLabel(text: String) {
+    Text(
+        text = text.uppercase(),
+        color = Color.White.copy(alpha = 0.44f),
+        fontSize = 11.sp,
+        fontWeight = FontWeight.Bold,
+        letterSpacing = 1.2.sp,
+        modifier = Modifier.padding(start = 2.dp, bottom = 10.dp)
+    )
+}
+
+@Composable
+fun ProfilePill(text: String) {
+    Box(
+        modifier = Modifier
+            .clip(RoundedCornerShape(100))
+            .background(Color.White.copy(alpha = 0.09f))
+            .border(1.dp, Color.White.copy(alpha = 0.12f), RoundedCornerShape(100))
+            .padding(horizontal = 9.dp, vertical = 6.dp)
+    ) {
+        Text(
+            text = text,
+            color = Color.White.copy(alpha = 0.76f),
+            fontSize = 10.sp,
+            fontWeight = FontWeight.SemiBold
+        )
     }
 }

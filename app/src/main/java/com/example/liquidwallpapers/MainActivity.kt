@@ -162,7 +162,6 @@ class MainActivity : ComponentActivity() {
                             val json = Uri.encode(gson.toJson(wallpaper))
                             navController.navigate("detail/$json")
                         },
-                        onFavoritesClick = { navController.navigate("favorites") },
                         scrollToTopTrigger = scrollToTopTrigger
                     )
                 }
