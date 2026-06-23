@@ -40,7 +40,7 @@ fun FavoritesScreen(
             TopAppBar(
                 title = {
                     Text(
-                        "My Collection",
+                        "My Favorites",
                         fontWeight = FontWeight.Bold,
                         color = Color.White
                     )

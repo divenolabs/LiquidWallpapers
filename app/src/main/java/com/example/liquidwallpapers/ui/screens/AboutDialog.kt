@@ -1,18 +1,32 @@
 package com.example.liquidwallpapers.ui.screens
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ArrowForward
 import androidx.compose.material.icons.rounded.Close
-import androidx.compose.material3.*
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,199 +37,159 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+import com.example.liquidwallpapers.R
 import com.example.liquidwallpapers.ui.theme.LiquidOrange
+
+private const val LIQUID_WALLPAPERS_PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.divenolabs.liquidwall"
+private const val LISTRO_PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.divenolabs.listro"
+private const val INSTAGRAM_URL = "https://www.instagram.com/rahulshekhawatb"
 
 @Composable
 fun AboutDialog(onDismiss: () -> Unit) {
     val uriHandler = LocalUriHandler.current
     val scrollState = rememberScrollState()
-    val instaUrl = "https://www.instagram.com/rahulshekhawatb"
 
-    Dialog(onDismissRequest = onDismiss) {
-        // Main dialog box with glass effect
+    Dialog(
+        onDismissRequest = onDismiss,
+        properties = DialogProperties(usePlatformDefaultWidth = false)
+    ) {
         Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(24.dp))
+                .fillMaxWidth(0.96f)
+                .widthIn(max = 520.dp)
+                .clip(RoundedCornerShape(8.dp))
                 .background(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(
-                            Color.Black.copy(alpha = 0.9f),
-                            Color.Black.copy(alpha = 0.95f)
+                    Brush.verticalGradient(
+                        listOf(
+                            Color(0xFF111923).copy(alpha = 0.98f),
+                            Color(0xFF070A0F).copy(alpha = 0.98f)
                         )
                     )
                 )
                 .border(
                     width = 1.dp,
                     brush = Brush.linearGradient(
-                        colors = listOf(
+                        listOf(
                             Color.White.copy(alpha = 0.2f),
-                            Color.Transparent,
-                            Color.White.copy(alpha = 0.1f)
+                            LiquidOrange.copy(alpha = 0.2f),
+                            Color.White.copy(alpha = 0.08f)
                         )
                     ),
-                    shape = RoundedCornerShape(24.dp)
+                    shape = RoundedCornerShape(8.dp)
                 )
         ) {
-            // Content Column
             Column(
                 modifier = Modifier
-                    .padding(24.dp)
+                    .padding(horizontal = 14.dp, vertical = 16.dp)
                     .verticalScroll(scrollState),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // --- HEADER ---
-                Text(
-                    text = "DIVENO LABS",
-                    color = Color.White,
-                    style = MaterialTheme.typography.headlineMedium.copy(
-                        fontWeight = FontWeight.ExtraBold,
-                        letterSpacing = 2.sp
+                Box(
+                    modifier = Modifier
+                        .size(70.dp)
+                        .clip(RoundedCornerShape(18.dp))
+                        .background(Color.White.copy(alpha = 0.08f))
+                        .border(1.dp, Color.White.copy(alpha = 0.16f), RoundedCornerShape(18.dp))
+                        .padding(8.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Image(
+                        painter = painterResource(id = R.mipmap.ic_launcher_foreground),
+                        contentDescription = "Liquid Wallpapers logo",
+                        modifier = Modifier
+                            .size(50.dp)
+                            .clip(RoundedCornerShape(14.dp))
                     )
+                }
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                Text(
+                    text = "Liquid Wallpapers",
+                    color = Color.White,
+                    fontSize = 25.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    letterSpacing = 0.sp
                 )
                 Text(
-                    text = "Psychology. Strategy. Design.",
-                    color = Color.Gray,
-                    style = MaterialTheme.typography.labelLarge.copy(
-                        fontStyle = FontStyle.Italic
-                    )
+                    text = "A Diveno Labs wallpaper experience",
+                    color = Color.White.copy(alpha = 0.56f),
+                    style = MaterialTheme.typography.bodySmall,
+                    textAlign = TextAlign.Center
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // --- ABOUT ---
-                SectionHeader("About Liquid Wallpapers")
-                Text(
-                    text = "We believe your screen influences your mind. Liquid Wallpapers curates the finest wallpapers to bring clarity, fluidity, and focus to your daily digital experience.",
-                    color = Color.White.copy(alpha = 0.8f),
-                    style = MaterialTheme.typography.bodyMedium,
-                    textAlign = TextAlign.Center
+                AboutPanel(
+                    title = "Premium 4K wallpapers",
+                    body = "Pexels-powered discovery, Diveno Favorites, Daily Mix, mood categories, saved favorites, Text Studio, icon blur, dark-mode dimming, and Liquid Studio in one calm workspace."
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                // --- PROJECTS ---
-                SectionHeader("Our Projects")
-                Text(
-                    text = "Building the future of style & tech:",
-                    color = Color.Gray,
-                    style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier.padding(bottom = 8.dp)
+                LinkPanel(
+                    title = "Download Liquid Wallpapers",
+                    body = "Open the current Play Store listing.",
+                    action = "Open on Play Store",
+                    emphasized = true,
+                    onClick = { uriHandler.openUri(LIQUID_WALLPAPERS_PLAY_STORE_URL) }
                 )
 
-                // Project 1: Listro
-                val listroText = buildAnnotatedString {
-                    append("• ")
-                    pushStringAnnotation(tag = "URL", annotation = "https://forms.gle/gSp2Dqee5kEB86PH9")
-                    withStyle(style = SpanStyle(color = LiquidOrange, fontWeight = FontWeight.Bold, textDecoration = TextDecoration.Underline)) {
-                        append("Listro")
-                    }
-                    pop()
-                    append(" - A sentient to-do app")
-                }
+                Spacer(modifier = Modifier.height(12.dp))
 
-                ClickableText(
-                    text = listroText,
-                    style = MaterialTheme.typography.bodyMedium.copy(color = Color.White.copy(alpha = 0.9f)),
-                    onClick = { offset ->
-                        listroText.getStringAnnotations(tag = "URL", start = offset, end = offset)
-                            .firstOrNull()?.let { annotation ->
-                                uriHandler.openUri(annotation.item)
-                            }
-                    }
+                LinkPanel(
+                    title = "Listro",
+                    body = "A focused AI to-do app from Diveno Labs.",
+                    action = "Open Listro",
+                    onClick = { uriHandler.openUri(LISTRO_PLAY_STORE_URL) }
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(12.dp))
 
-                // Ad: The Navra
-                SectionHeader("Ad:")
-                val navraText = buildAnnotatedString {
-                    append("• ")
-                    pushStringAnnotation(tag = "URL", annotation = "https://www.thenavra.com")
-                    withStyle(style = SpanStyle(color = LiquidOrange, fontWeight = FontWeight.Bold, textDecoration = TextDecoration.Underline)) {
-                        append("THE NAVRA")
-                    }
-                    pop()
-                    append(": Redefining Women's Ethnic Clothing")
-                }
-
-                ClickableText(
-                    text = navraText,
-                    style = MaterialTheme.typography.bodyMedium.copy(color = Color.White.copy(alpha = 0.9f)),
-                    onClick = { offset ->
-                        navraText.getStringAnnotations(tag = "URL", start = offset, end = offset)
-                            .firstOrNull()?.let { annotation ->
-                                uriHandler.openUri(annotation.item)
-                            }
-                    }
+                AboutPanel(
+                    title = "Content posture",
+                    body = "Wallpapers come from Pexels-powered discovery and Diveno-hosted favorites. Third-party images remain owned by their photographers or rights holders."
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
-
-                // --- THE FUTURE ---
-                SectionHeader("The Future")
-                Text(
-                    text = "\"Evolution is coming in Wallpapers App. Stay tuned for exciting features in coming updates\"",
-                    color = Color.White.copy(alpha = 0.8f),
-                    style = MaterialTheme.typography.bodyMedium.copy(fontStyle = FontStyle.Italic),
-                    textAlign = TextAlign.Center
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                // --- FOOTER ---
+                Spacer(modifier = Modifier.height(14.dp))
                 HorizontalDivider(color = Color.White.copy(alpha = 0.1f))
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(10.dp))
 
-                // --- SOCIALS (Instagram) ---
                 Text(
-                    text = "Connect with me",
-                    color = Color.Gray,
-                    style = MaterialTheme.typography.labelSmall,
-                    modifier = Modifier.padding(bottom = 8.dp)
+                    text = "Connect with Rahul",
+                    color = Color.White.copy(alpha = 0.5f),
+                    style = MaterialTheme.typography.labelSmall
                 )
-
-                // INSTAGRAM ICON BUTTON
+                Spacer(modifier = Modifier.height(8.dp))
                 Box(
                     modifier = Modifier
                         .clip(CircleShape)
-                        .clickable { uriHandler.openUri(instaUrl) }
+                        .clickable { uriHandler.openUri(INSTAGRAM_URL) }
                         .padding(8.dp)
                 ) {
                     InstagramLogo()
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
-
                 Text(
-                    text = "Building the apps I wish existed.",
-                    color = Color.Gray,
+                    text = "2026 Diveno Labs | Rahul Shekhawat",
+                    color = Color.White.copy(alpha = 0.42f),
                     style = MaterialTheme.typography.labelSmall
                 )
-                Text(
-                    text = "© 2026 Diveno Labs | Rahul Shekhawat",
-                    color = Color.Gray,
-                    style = MaterialTheme.typography.labelSmall
-                )
-                Spacer(modifier = Modifier.height(16.dp))
             }
 
-            // Close Button moved to Top-Right
             IconButton(
                 onClick = onDismiss,
                 modifier = Modifier
                     .align(Alignment.TopEnd)
-                    .padding(16.dp)
+                    .padding(12.dp)
                     .background(Color.White.copy(alpha = 0.1f), CircleShape)
                     .size(32.dp)
             ) {
@@ -231,39 +205,88 @@ fun AboutDialog(onDismiss: () -> Unit) {
 }
 
 @Composable
-fun SectionHeader(title: String) {
-    Text(
-        text = title,
-        color = LiquidOrange,
-        style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
-        modifier = Modifier.padding(bottom = 8.dp)
-    )
+private fun AboutPanel(
+    title: String,
+    body: String
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(8.dp))
+            .background(Color.White.copy(alpha = 0.065f))
+            .border(1.dp, Color.White.copy(alpha = 0.1f), RoundedCornerShape(8.dp))
+            .padding(12.dp)
+    ) {
+        Text(title, color = LiquidOrange, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+        Spacer(modifier = Modifier.height(7.dp))
+        Text(
+            text = body,
+            color = Color.White.copy(alpha = 0.76f),
+            style = MaterialTheme.typography.bodySmall,
+            lineHeight = 17.sp
+        )
+    }
 }
 
-// --- CUSTOM INSTAGRAM ICON ---
+@Composable
+private fun LinkPanel(
+    title: String,
+    body: String,
+    action: String,
+    emphasized: Boolean = false,
+    onClick: () -> Unit
+) {
+    val containerColor = if (emphasized) LiquidOrange.copy(alpha = 0.16f) else Color.White.copy(alpha = 0.065f)
+    val borderColor = if (emphasized) LiquidOrange.copy(alpha = 0.36f) else Color.White.copy(alpha = 0.1f)
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(8.dp))
+            .background(containerColor)
+            .border(1.dp, borderColor, RoundedCornerShape(8.dp))
+            .clickable { onClick() }
+            .padding(12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
+            Text(title, color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+            Spacer(modifier = Modifier.height(3.dp))
+            Text(body, color = Color.White.copy(alpha = 0.68f), style = MaterialTheme.typography.bodySmall)
+            Spacer(modifier = Modifier.height(6.dp))
+            Text(action, color = LiquidOrange, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+        }
+        Icon(
+            imageVector = Icons.AutoMirrored.Rounded.ArrowForward,
+            contentDescription = null,
+            tint = LiquidOrange,
+            modifier = Modifier.size(20.dp)
+        )
+    }
+}
+
 @Composable
 fun InstagramLogo() {
-    val instaGradient = listOf(
-        Color(0xFF833AB4), // Purple
-        Color(0xFFFD1D1D), // Red/Pink
-        Color(0xFFF77737)  // Orange
+    val brush = Brush.linearGradient(
+        listOf(
+            Color(0xFF833AB4),
+            Color(0xFFFD1D1D),
+            Color(0xFFF77737)
+        )
     )
-    val brush = Brush.linearGradient(colors = instaGradient)
 
     Canvas(modifier = Modifier.size(32.dp)) {
-        // 1. Outer Rounded Rectangle
         drawRoundRect(
             brush = brush,
             cornerRadius = CornerRadius(8.dp.toPx(), 8.dp.toPx()),
             style = Stroke(width = 3.dp.toPx())
         )
-        // 2. Inner Circle
         drawCircle(
             brush = brush,
             radius = 5.dp.toPx(),
             style = Stroke(width = 3.dp.toPx())
         )
-        // 3. The small dot
         drawCircle(
             brush = brush,
             radius = 1.5.dp.toPx(),

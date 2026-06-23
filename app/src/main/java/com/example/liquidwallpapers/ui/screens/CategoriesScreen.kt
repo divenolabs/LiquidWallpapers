@@ -43,43 +43,67 @@ data class CategoryPortal(
     val imageUrl: String
 )
 
-// Verified high-quality Pexels URLs with proper size parameters
+// High-impact, no-people category covers chosen to feel like wallpaper art.
 val liquidCategories = listOf(
     CategoryPortal(
-        "1", "Abstract Art", Color(0xFFE91E63),
-        "https://images.pexels.com/photos/2832382/pexels-photo-2832382.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+        "10", "Liquid Glass", Color(0xFF00E5FF),
+        "https://images.pexels.com/photos/29355930/pexels-photo-29355930.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
     ),
     CategoryPortal(
-        "2", "Amoled Dark", Color(0xFF212121),
-        "https://images.pexels.com/photos/1629236/pexels-photo-1629236.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+        "11", "3D Shapes", Color(0xFF7C4DFF),
+        "https://images.pexels.com/photos/33797646/pexels-photo-33797646.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
     ),
     CategoryPortal(
-        "3", "Deep Space", Color(0xFF3F51B5),
+        "12", "Gradient Flow", Color(0xFFFF2E88),
+        "https://images.pexels.com/photos/6985132/pexels-photo-6985132.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+    ),
+    CategoryPortal(
+        "13", "Flower Macro", Color(0xFF1E88FF),
+        "https://images.pexels.com/photos/10621654/pexels-photo-10621654.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+    ),
+    CategoryPortal(
+        "14", "Sunset Glow", Color(0xFFFF6B35),
+        "https://images.pexels.com/photos/13869913/pexels-photo-13869913.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+    ),
+    CategoryPortal(
+        "15", "Coastal Blue", Color(0xFF00C2D1),
+        "https://images.pexels.com/photos/28607786/pexels-photo-28607786.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+    ),
+    CategoryPortal(
+        "1", "Abstract Art", Color(0xFF7C4DFF),
+        "https://images.pexels.com/photos/7120460/pexels-photo-7120460.png?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+    ),
+    CategoryPortal(
+        "2", "Amoled Dark", Color(0xFF111111),
+        "https://images.pexels.com/photos/20818845/pexels-photo-20818845.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+    ),
+    CategoryPortal(
+        "3", "Deep Space", Color(0xFF2F5BFF),
         "https://images.pexels.com/photos/998641/pexels-photo-998641.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
     ),
     CategoryPortal(
-        "4", "Cyberpunk", Color(0xFF9C27B0),
-        "https://images.pexels.com/photos/3075993/pexels-photo-3075993.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+        "4", "Cyberpunk", Color(0xFFFF4D00),
+        "https://images.pexels.com/photos/36521494/pexels-photo-36521494.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
     ),
     CategoryPortal(
-        "5", "Nature HD", Color(0xFF4CAF50),
-        "https://images.pexels.com/photos/3408744/pexels-photo-3408744.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+        "5", "Nature HD", Color(0xFF00A86B),
+        "https://images.pexels.com/photos/17640525/pexels-photo-17640525.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
     ),
     CategoryPortal(
-        "6", "Minimalist", Color(0xFF607D8B),
-        "https://images.pexels.com/photos/1585325/pexels-photo-1585325.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+        "6", "Minimalist", Color(0xFF4CB3FF),
+        "https://images.pexels.com/photos/34133564/pexels-photo-34133564.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
     ),
     CategoryPortal(
-        "7", "Aesthetics", Color(0xFFFF9800),
-        "https://images.pexels.com/photos/1910236/pexels-photo-1910236.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+        "7", "Aesthetics", Color(0xFFFFD166),
+        "https://images.pexels.com/photos/29355930/pexels-photo-29355930.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
     ),
     CategoryPortal(
-        "8", "Automotive", Color(0xFFF44336),
-        "https://images.pexels.com/photos/3802510/pexels-photo-3802510.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+        "8", "Automotive", Color(0xFFFFC400),
+        "https://images.pexels.com/photos/30849327/pexels-photo-30849327.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
     ),
     CategoryPortal(
-        "9", "Mountains", Color(0xFF5D8A66),
-        "https://images.pexels.com/photos/1054218/pexels-photo-1054218.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+        "9", "Mountains", Color(0xFF00D084),
+        "https://images.pexels.com/photos/35815154/pexels-photo-35815154.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
     )
 )
 
@@ -140,7 +164,7 @@ fun CategoriesScreen(
         LazyColumn(
             state = listState,
             flingBehavior = flingBehavior,
-            contentPadding = PaddingValues(top = 180.dp, bottom = 200.dp, start = 16.dp, end = 16.dp),
+            contentPadding = PaddingValues(top = 180.dp, bottom = 200.dp, start = 12.dp, end = 12.dp),
             verticalArrangement = Arrangement.spacedBy(24.dp),
             modifier = Modifier
                 .fillMaxSize()
@@ -186,7 +210,7 @@ fun CategoriesScreen(
                     )
                 )
                 .statusBarsPadding()
-                .padding(horizontal = 20.dp)
+                .padding(horizontal = 12.dp)
                 .padding(top = 20.dp, bottom = 32.dp)
         ) {
             Text("Categories", color = Color.White, fontSize = 28.sp, fontWeight = FontWeight.Bold)

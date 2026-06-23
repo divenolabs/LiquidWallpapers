@@ -64,17 +64,23 @@ class CategoryDetailViewModel @Inject constructor(
 
     private fun mapCategoryToQuery(category: String): String {
         return when (category.trim().lowercase()) {
-            "", "all", "wallpapers" -> "wallpaper"
-            "abstract art" -> "abstract art"
-            "amoled dark", "amoled pure" -> "amoled dark"
-            "deep space" -> "space"
-            "cyberpunk" -> "cyberpunk"
-            "nature hd" -> "nature"
-            "minimalist" -> "minimalist"
-            "aesthetics" -> "aesthetic"
-            "automotive" -> "supercars"
-            "mountains" -> "mountains"
-            else -> "$category wallpapers"
+            "", "all", "wallpapers" -> "abstract nature mobile wallpaper"
+            "liquid glass" -> "glass prism light abstract wallpaper"
+            "3d shapes" -> "3d render abstract background wallpaper"
+            "gradient flow" -> "colorful gradient abstract wallpaper"
+            "flower macro" -> "macro flower wallpaper"
+            "sunset glow" -> "sunset sky landscape wallpaper"
+            "coastal blue" -> "turquoise water beach wallpaper"
+            "abstract art" -> "colorful abstract macro texture wallpaper"
+            "amoled dark", "amoled pure" -> "black abstract texture amoled wallpaper"
+            "deep space" -> "galaxy nebula starfield wallpaper"
+            "cyberpunk" -> "empty neon city night wallpaper"
+            "nature hd" -> "forest waterfall landscape wallpaper"
+            "minimalist" -> "minimal architecture wallpaper"
+            "aesthetics" -> "prism light abstract wallpaper"
+            "automotive" -> "sports car detail wallpaper"
+            "mountains" -> "aurora mountain landscape wallpaper"
+            else -> "$category abstract wallpaper"
         }
     }
 }
