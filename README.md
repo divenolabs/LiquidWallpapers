@@ -1,70 +1,113 @@
 # Liquid Wallpapers
 
-Liquid Wallpapers is a premium Android wallpaper app and background creator built by Diveno Labs. It combines Pexels-powered wallpaper discovery, a curated Diveno Favorites collection, Daily Mix, mood-based categories, saved favorites, and a built-in Studio for creating custom liquid gradient wallpapers.
+Premium 4K wallpapers and a background creator for modern Android screens.
 
-The app is designed for modern Android screens, including AMOLED displays, with a glassmorphic interface, dark visual language, direct Home and Lock screen application, and careful attention to smoothness, privacy, and battery efficiency.
+[![Android](https://img.shields.io/badge/Platform-Android-3DDC84?style=for-the-badge&logo=android&logoColor=white)](https://www.android.com/)
+[![Kotlin](https://img.shields.io/badge/Kotlin-Jetpack%20Compose-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white)](https://kotlinlang.org/)
+[![Diveno Labs](https://img.shields.io/badge/By-Diveno%20Labs-ff3d00?style=for-the-badge)](https://www.divenolabs.in/)
 
-[Download on Google Play](https://play.google.com/store/apps/details?id=com.divenolabs.liquidwall&hl=en_IN)
+Liquid Wallpapers is a premium Android wallpaper app built by [Diveno Labs](https://www.divenolabs.in/). It combines Pexels-powered 4K discovery, Diveno Favorites, Daily Mix, mood categories, saved favorites, direct wallpaper application, Text Studio, icon blur, dark-mode dimming, and Liquid Studio for creating custom fluid gradients.
 
-## Highlights
+The app is designed for image-first browsing: calm dark surfaces, glass-inspired controls, AMOLED-friendly contrast, and fast Android-first interactions.
 
-- Premium wallpaper discovery powered by Pexels search and curated feeds.
+## Quick Links
+
+| Resource | Link |
+| --- | --- |
+| Product page | [divenolabs.in/apps/liquid-wallpapers](https://www.divenolabs.in/apps/liquid-wallpapers) |
+| Download | [Google Play](https://play.google.com/store/apps/details?id=com.divenolabs.liquidwall) |
+| Changelog | [Liquid Wallpapers changelog](https://www.divenolabs.in/apps/liquid-wallpapers/changelog) |
+| Privacy policy | [Liquid Wallpapers Privacy](https://www.divenolabs.in/liquid-wallpapers-privacy-policy.html) |
+| Terms of service | [Liquid Wallpapers Terms](https://www.divenolabs.in/liquid-wallpapers-terms.html) |
+| Diveno Labs | [www.divenolabs.in](https://www.divenolabs.in/) |
+| Support | [care@divenolabs.in](mailto:care@divenolabs.in) |
+
+## Current Version
+
+**v2.7**
+
+- Premium Home redesign with Today's Drop.
+- Better wallpaper curation and safer Pexels results.
+- Refreshed mood categories and thumbnails.
+- Redesigned Profile and About surfaces.
+- Real Profile stats for saved wallpapers, Daily Mix state, and cache size.
+- New compressed splash screen artwork.
+- UI spacing, navigation, and naming fixes across the app.
+
+## Features
+
+### Wallpaper Discovery
+
+- Pexels-powered 4K wallpaper search.
 - Diveno Favorites / Founder's Collection loaded from Diveno-hosted metadata.
-- Daily Mix swipe deck for a fresh set of wallpapers each day.
-- Mood-based categories including Abstract Art, Amoled Dark, Deep Space, Cyberpunk, Nature HD, Minimalist, Aesthetics, Automotive, and Mountains.
-- Favorites powered by a local Room database.
-- Detail view with zoom, pan, favorite, edit, download, text tools, and wallpaper application.
-- Liquid Studio for generating custom liquid gradient wallpapers.
-- Profile hub with emoji avatars, favorites, cache clearing, sharing, Daily Mix reset, and app information.
+- Today’s Drop for a stable daily featured wallpaper.
+- Fresh Wall feed for high-quality mobile wallpapers.
+- Content filters for cleaner, wallpaper-first results.
 
-## Studio
+### Daily Mix
 
-Liquid Studio turns the phone into a creative wallpaper suite. Users can generate custom fluid gradient backgrounds, tune the result, and export it without leaving the app.
+- Swipe through a fresh daily wallpaper deck.
+- Swipe right to favorite and left to skip.
+- Seen wallpapers are remembered during the day to avoid repeats.
+- Profile includes a reset action for another pass.
 
-Studio features include:
+### Categories
 
-- Vibe presets such as Midnight, Cyberpunk, Aurora, Ember, Ocean, Galaxy, Neon, Sakura, Storm, and more.
-- Blur, dim, brightness, and contrast controls.
-- Gallery export.
-- Direct Home screen and Lock screen application.
-- Text Studio support for custom quotes, multi-line text, alignment control, and sharp exports.
+- Mood-based discovery for AMOLED, nature, neon, calm, space, abstract, liquid glass, gradients, flowers, sunsets, coastal scenes, and more.
+- Trending categories are surfaced near the top.
+- Category search queries are tuned for wallpaper-style results.
 
-## Daily Mix And Discovery
+### Favorites
 
-Liquid Wallpapers is built for repeat discovery rather than endless grid scrolling.
+- Save wallpapers locally with Room.
+- Revisit saved wallpapers in **My Favorites**.
+- Open saved items directly in the wallpaper detail flow.
 
-- Explore starts with Diveno Favorites and a Pexels-powered wallpaper feed.
-- Search fetches high-quality mobile wallpaper results from Pexels.
-- Daily Mix uses day-based wallpaper selection so each day feels fresh.
-- Seen wallpapers are remembered for the day to avoid repeat cards.
-- Swipe right to favorite and swipe left to skip.
-- Profile includes a Daily Mix reset action for another pass.
+### Liquid Studio
+
+Create custom wallpapers inside the app.
+
+- Liquid gradient presets.
+- Blur, dimming, brightness, contrast, and strength controls.
+- Text Studio for quote-style wallpapers.
+- Export to Gallery.
+- Apply to Home screen, Lock screen, or both.
+
+### Profile
+
+- Emoji avatar customization.
+- Saved wallpaper count.
+- Daily Mix status.
+- Image cache size.
+- Cache clearing, sharing, major links, and About.
 
 ## Design Language
 
-The app uses a premium glassmorphic UI designed around dark surfaces, floating controls, orange accent lighting, and image-first composition.
+Liquid Wallpapers uses a premium glass-inspired interface:
 
-Key interaction details:
+- Dark, AMOLED-friendly surfaces.
+- Orange accent lighting.
+- Image-first composition.
+- Floating bottom navigation.
+- Smooth Compose animations.
+- Ghost-fade scrolling behind the navigation bar.
 
-- Floating glass navigation across Explore, Categories, Daily Mix, Studio, and Profile.
-- Ghost-fade scrolling so content fades behind the navigation bar.
-- Smooth Android-first animations tuned for a 60fps feel.
-- Dark-mode-friendly wallpaper controls for dimming, blur, and contrast.
+The goal is simple: wallpapers should feel like a curated visual space, not a noisy image grid.
 
 ## Privacy And Content
 
-Liquid Wallpapers avoids hidden or unnecessary data collection. Wallpaper images may come from Pexels or Diveno-hosted metadata, and third-party images remain the property of their respective photographers or rights holders.
-
-The app may request:
+Liquid Wallpapers asks for permissions only around the wallpaper workflow:
 
 - Internet and network state access to fetch wallpapers.
 - Set wallpaper permission to apply images directly.
-- Legacy external storage access on older Android versions for saving wallpapers.
+- Storage / photos access where required for saving wallpapers, especially on older Android versions.
 
-See the public policy pages for full details:
+Wallpaper images may come from Pexels-powered discovery or Diveno-hosted metadata. Third-party images remain owned by their respective photographers or rights holders.
 
-- [Privacy Policy](https://divenolabs.com/liquid-wallpapers-privacy-policy.html)
-- [Terms and Conditions](https://divenolabs.com/liquid-wallpapers-terms.html)
+Read the full policies:
+
+- [Privacy Policy](https://www.divenolabs.in/liquid-wallpapers-privacy-policy.html)
+- [Terms of Service](https://www.divenolabs.in/liquid-wallpapers-terms.html)
 
 ## Tech Stack
 
@@ -79,8 +122,32 @@ See the public policy pages for full details:
 - Firebase Analytics, Auth, and Firestore dependencies
 - Google Play In-App Updates
 
+## Project Structure
+
+```text
+app/src/main/java/com/example/liquidwallpapers/
+├── data/          # API, Room, repositories, filtering
+├── di/            # Hilt modules
+├── ui/            # Compose screens, components, theme
+└── util/          # Image and bitmap helpers
+```
+
+## Build
+
+Add your Pexels API key to `local.properties`:
+
+```properties
+PEXELS_API_KEY=your_key_here
+```
+
+Then build:
+
+```powershell
+.\gradlew.bat :app:assembleDebug
+```
+
 ## Brand
 
-Liquid Wallpapers is a Diveno Labs product.
+Liquid Wallpapers is a [Diveno Labs](https://www.divenolabs.in/) product from Jaipur, Rajasthan.
 
-We believe your screen influences your mind. Liquid Wallpapers curates and creates visual spaces that bring clarity, fluidity, and focus to everyday Android use.
+Diveno Labs builds Android apps, practical AI tools, and polished digital products with a focus on speed, clarity, privacy, and design.
